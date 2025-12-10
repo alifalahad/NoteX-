@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    
+    <!-- Background circle -->
+    <path
+        android:fillColor="@color/white"
+        android:pathData="M60,60m-55,0a55,55 0,1 1,110 0a55,55 0,1 1,-110 0" />
+    
+    <!-- Stylized N++ logo -->
+    <group
+        android:translateX="30"
+        android:translateY="30">
+        
+        <!-- N letter -->
+        <path
+            android:fillColor="@color/primary"
+            android:pathData="M10,10 L18,10 L18,40 L10,40 Z" />
+        <path
+            android:fillColor="@color/primary"
+            android:pathData="M18,10 L32,40 L40,40 L40,10 L32,10 L32,30 L18,10 Z" />
+        
+        <!-- Plus signs -->
+        <path
+            android:fillColor="@color/secondary"
+            android:pathData="M48,15 L52,15 L52,25 L48,25 Z" />
+        <path
+            android:fillColor="@color/secondary"
+            android:pathData="M45,18 L55,18 L55,22 L45,22 Z" />
+        
+        <path
+            android:fillColor="@color/secondary"
+            android:pathData="M48,30 L52,30 L52,40 L48,40 Z" />
+        <path
+            android:fillColor="@color/secondary"
+            android:pathData="M45,33 L55,33 L55,37 L45,37 Z" />
+    </group>
+</vector>

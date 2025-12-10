@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base colors -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    
+    <!-- Primary colors - Deep Purple/Blue gradient -->
+    <color name="primary">#6366F1</color>
+    <color name="primary_dark">#4F46E5</color>
+    <color name="primary_light">#818CF8</color>
+    <color name="primary_variant">#8B5CF6</color>
+    
+    <!-- Secondary colors - Vibrant accent -->
+    <color name="secondary">#EC4899</color>
+    <color name="secondary_dark">#DB2777</color>
+    <color name="secondary_light">#F472B6</color>
+    
+    <!-- Tertiary colors -->
+    <color name="tertiary">#14B8A6</color>
+    <color name="tertiary_dark">#0D9488</color>
+    
+    <!-- Surface colors -->
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_variant">#F3F4F6</color>
+    <color name="surface_container">#F9FAFB</color>
+    
+    <!-- Background colors -->
+    <color name="background">#FAFAFA</color>
+    <color name="background_gradient_start">#6366F1</color>
+    <color name="background_gradient_end">#8B5CF6</color>
+    
+    <!-- Text colors -->
+    <color name="text_primary">#1F2937</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="text_hint">#9CA3AF</color>
+    <color name="text_on_primary">#FFFFFF</color>
+    
+    <!-- Error colors -->
+    <color name="error">#EF4444</color>
+    <color name="error_dark">#DC2626</color>
+    
+    <!-- Success colors -->
+    <color name="success">#10B981</color>
+    <color name="success_dark">#059669</color>
+    
+    <!-- Outline colors -->
+    <color name="outline">#E5E7EB</color>
+    <color name="outline_variant">#D1D5DB</color>
+    
+    <!-- Dark mode colors -->
+    <color name="surface_dark">#1F2937</color>
+    <color name="background_dark">#111827</color>
+    <color name="text_primary_dark">#F9FAFB</color>
+    <color name="text_secondary_dark">#D1D5DB</color>
+    
+    <!-- Transparent overlays -->
+    <color name="scrim">#80000000</color>
+    <color name="overlay_light">#1AFFFFFF</color>
+</resources>
