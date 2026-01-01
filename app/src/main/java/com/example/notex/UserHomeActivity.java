@@ -66,10 +66,8 @@ public class UserHomeActivity extends AppCompatActivity {
 
         // My Notebooks
         binding.cardMyNotebooks.setOnClickListener(v -> {
-            Toast.makeText(this, "My Notebooks - Coming soon!", Toast.LENGTH_SHORT).show();
-            // TODO: Navigate to notebooks list
-            // Intent intent = new Intent(UserHomeActivity.this, NotebooksActivity.class);
-            // startActivity(intent);
+            Intent intent = new Intent(UserHomeActivity.this, NotebooksActivity.class);
+            startActivity(intent);
         });
 
         // Search Notes
@@ -95,17 +93,13 @@ public class UserHomeActivity extends AppCompatActivity {
     }
 
     private void loadUserData() {
-        // TODO: Load user statistics from database
-        // For now, show placeholder data
-        binding.tvNotebookCount.setText("0");
+        // Load user statistics from database
+        com.example.notex.database.DatabaseHelper db = com.example.notex.database.DatabaseHelper.getInstance(this);
+        int notebookCount = db.getNotebookCount(currentUser.getId());
+
+        binding.tvNotebookCount.setText(String.valueOf(notebookCount));
         binding.tvNotesCount.setText("0");
         binding.tvTagsCount.setText("0");
-
-        // TODO: Implement database queries
-        // DatabaseHelper db = DatabaseHelper.getInstance(this);
-        // int notebookCount = db.getNotebookCount(currentUser.getId());
-        // int notesCount = db.getNotesCount(currentUser.getId());
-        // int tagsCount = db.getTagsCount(currentUser.getId());
     }
 
     @Override

@@ -55,6 +55,34 @@
             android:name=".AdminDashboardActivity"
             android:exported="false" />
         
+        <!-- Notebooks Activity -->
+        <activity
+            android:name=".NotebooksActivity"
+            android:exported="false" />
+        
+        <!-- Create Notebook Activity -->
+        <activity
+            android:name=".CreateNotebookActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        
+        <!-- Notebook Pages Activity -->
+        <activity
+            android:name=".NotebookPagesActivity"
+            android:exported="false" />
+        
+        <!-- Page Editor Activity -->
+        <activity
+            android:name=".PageEditorActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        
+        <!-- Multi-Page Editor Activity -->
+        <activity
+            android:name=".MultiPageEditorActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        
         <!-- Original MainActivity (kept for reference, not used) -->
         <activity
             android:name=".MainActivity"

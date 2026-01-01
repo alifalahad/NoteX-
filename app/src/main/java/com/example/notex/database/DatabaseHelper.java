@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.notex.models.User;
+import com.example.notex.models.Notebook;
+import com.example.notex.models.Page;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,7 +24,7 @@ import java.util.UUID;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "notex.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     // Users table
     private static final String TABLE_USERS = "users";
@@ -33,6 +35,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_ROLE = "role";
     private static final String COLUMN_CREATED_AT = "created_at";
     private static final String COLUMN_LAST_LOGIN = "last_login";
+
+    // Notebooks table
+    private static final String TABLE_NOTEBOOKS = "notebooks";
+    private static final String COLUMN_NOTEBOOK_ID = "id";
+    private static final String COLUMN_USER_ID = "user_id";
+    private static final String COLUMN_TITLE = "title";
+    private static final String COLUMN_COLOR = "color";
+    private static final String COLUMN_IS_PINNED = "is_pinned";
+    private static final String COLUMN_NOTEBOOK_CREATED_AT = "created_at";
+    private static final String COLUMN_NOTEBOOK_UPDATED_AT = "updated_at";
+
+    // Pages table
+    private static final String TABLE_PAGES = "pages";
+    private static final String COLUMN_PAGE_ID = "id";
+    private static final String COLUMN_PAGE_NOTEBOOK_ID = "notebook_id";
+    private static final String COLUMN_PAGE_TITLE = "title";
+    private static final String COLUMN_PAGE_CONTENT = "content";
+    private static final String COLUMN_PAGE_NUMBER = "page_number";
+    private static final String COLUMN_PAGE_CREATED_AT = "created_at";
+    private static final String COLUMN_PAGE_UPDATED_AT = "updated_at";
 
     private static DatabaseHelper instance;
 
@@ -60,12 +82,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + ")";
         db.execSQL(CREATE_USERS_TABLE);
 
+        // Create notebooks table
+        String CREATE_NOTEBOOKS_TABLE = "CREATE TABLE " + TABLE_NOTEBOOKS + "("
+                + COLUMN_NOTEBOOK_ID + " TEXT PRIMARY KEY,"
+                + COLUMN_USER_ID + " TEXT NOT NULL,"
+                + COLUMN_TITLE + " TEXT NOT NULL,"
+                + COLUMN_COLOR + " TEXT,"
+                + COLUMN_IS_PINNED + " INTEGER DEFAULT 0,"
+                + COLUMN_NOTEBOOK_CREATED_AT + " TEXT,"
+                + COLUMN_NOTEBOOK_UPDATED_AT + " TEXT,"
+                + "FOREIGN KEY(" + COLUMN_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_ID + ")"
+                + ")";
+        db.execSQL(CREATE_NOTEBOOKS_TABLE);
+
+        // Create pages table
+        String CREATE_PAGES_TABLE = "CREATE TABLE " + TABLE_PAGES + "("
+                + COLUMN_PAGE_ID + " TEXT PRIMARY KEY,"
+                + COLUMN_PAGE_NOTEBOOK_ID + " TEXT NOT NULL,"
+                + COLUMN_PAGE_TITLE + " TEXT NOT NULL,"
+                + COLUMN_PAGE_CONTENT + " TEXT,"
+                + COLUMN_PAGE_NUMBER + " INTEGER,"
+                + COLUMN_PAGE_CREATED_AT + " TEXT,"
+                + COLUMN_PAGE_UPDATED_AT + " TEXT,"
+                + "FOREIGN KEY(" + COLUMN_PAGE_NOTEBOOK_ID + ") REFERENCES " + TABLE_NOTEBOOKS + "("
+                + COLUMN_NOTEBOOK_ID + ")"
+                + ")";
+        db.execSQL(CREATE_PAGES_TABLE);
+
         // Insert default users
         insertDefaultUsers(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PAGES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTEBOOKS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         onCreate(db);
     }
@@ -245,7 +296,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_ROLE, newRole.name());
-        
+
         int result = db.update(TABLE_USERS, values, COLUMN_ID + "=?", new String[] { userId });
         return result > 0;
     }
@@ -319,5 +370,340 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return count;
+    }
+
+    // ==================== Notebook Methods ====================
+
+    /**
+     * Add a new notebook
+     */
+    public boolean addNotebook(String userId, String title, String color) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_NOTEBOOK_ID, UUID.randomUUID().toString());
+            values.put(COLUMN_USER_ID, userId);
+            values.put(COLUMN_TITLE, title);
+            values.put(COLUMN_COLOR, color);
+            values.put(COLUMN_IS_PINNED, 0);
+            values.put(COLUMN_NOTEBOOK_CREATED_AT, getCurrentTimestamp());
+            values.put(COLUMN_NOTEBOOK_UPDATED_AT, getCurrentTimestamp());
+
+            long result = db.insert(TABLE_NOTEBOOKS, null, values);
+            return result != -1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Get all notebooks for a specific user
+     */
+    public List<Notebook> getUserNotebooks(String userId) {
+        List<Notebook> notebooks = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.query(TABLE_NOTEBOOKS,
+                    null,
+                    COLUMN_USER_ID + "=?",
+                    new String[] { userId },
+                    null, null,
+                    COLUMN_IS_PINNED + " DESC, " + COLUMN_NOTEBOOK_UPDATED_AT + " DESC");
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    notebooks.add(cursorToNotebook(cursor));
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return notebooks;
+    }
+
+    /**
+     * Get notebook by ID
+     */
+    public Notebook getNotebookById(String notebookId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Notebook notebook = null;
+        Cursor cursor = null;
+
+        try {
+            cursor = db.query(TABLE_NOTEBOOKS,
+                    null,
+                    COLUMN_NOTEBOOK_ID + "=?",
+                    new String[] { notebookId },
+                    null, null, null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                notebook = cursorToNotebook(cursor);
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return notebook;
+    }
+
+    /**
+     * Update notebook
+     */
+    public boolean updateNotebook(String notebookId, String title, String color) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TITLE, title);
+        values.put(COLUMN_COLOR, color);
+        values.put(COLUMN_NOTEBOOK_UPDATED_AT, getCurrentTimestamp());
+
+        int result = db.update(TABLE_NOTEBOOKS, values, COLUMN_NOTEBOOK_ID + "=?", new String[] { notebookId });
+        return result > 0;
+    }
+
+    /**
+     * Toggle notebook pinned status
+     */
+    public boolean toggleNotebookPin(String notebookId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Notebook notebook = getNotebookById(notebookId);
+
+        if (notebook != null) {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_IS_PINNED, notebook.isPinned() ? 0 : 1);
+            values.put(COLUMN_NOTEBOOK_UPDATED_AT, getCurrentTimestamp());
+
+            int result = db.update(TABLE_NOTEBOOKS, values, COLUMN_NOTEBOOK_ID + "=?", new String[] { notebookId });
+            return result > 0;
+        }
+        return false;
+    }
+
+    /**
+     * Delete notebook
+     */
+    public boolean deleteNotebook(String notebookId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete(TABLE_NOTEBOOKS, COLUMN_NOTEBOOK_ID + "=?", new String[] { notebookId });
+        return result > 0;
+    }
+
+    /**
+     * Get notebook count for a user
+     */
+    public int getNotebookCount(String userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        int count = 0;
+
+        try {
+            cursor = db.rawQuery(
+                    "SELECT COUNT(*) FROM " + TABLE_NOTEBOOKS + " WHERE " + COLUMN_USER_ID + "=?",
+                    new String[] { userId });
+
+            if (cursor != null && cursor.moveToFirst()) {
+                count = cursor.getInt(0);
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return count;
+    }
+
+    /**
+     * Convert cursor to Notebook object
+     */
+    private Notebook cursorToNotebook(Cursor cursor) {
+        String id = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOTEBOOK_ID));
+        String userId = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USER_ID));
+        String title = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TITLE));
+        String color = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_COLOR));
+        int isPinnedInt = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_IS_PINNED));
+        boolean isPinned = isPinnedInt == 1;
+
+        return new Notebook(id, userId, title, color, isPinned);
+    }
+
+    // ==================== Page Methods ====================
+
+    /**
+     * Add a new page to a notebook
+     */
+    public boolean addPage(String notebookId, String title, String content) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try {
+            // Get next page number
+            int pageNumber = getPageCount(notebookId) + 1;
+
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_PAGE_ID, UUID.randomUUID().toString());
+            values.put(COLUMN_PAGE_NOTEBOOK_ID, notebookId);
+            values.put(COLUMN_PAGE_TITLE, title);
+            values.put(COLUMN_PAGE_CONTENT, content);
+            values.put(COLUMN_PAGE_NUMBER, pageNumber);
+            values.put(COLUMN_PAGE_CREATED_AT, getCurrentTimestamp());
+            values.put(COLUMN_PAGE_UPDATED_AT, getCurrentTimestamp());
+
+            long result = db.insert(TABLE_PAGES, null, values);
+
+            // Update notebook's updated_at timestamp
+            if (result != -1) {
+                updateNotebookTimestamp(notebookId);
+            }
+
+            return result != -1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Get all pages for a notebook
+     */
+    public List<Page> getNotebookPages(String notebookId) {
+        List<Page> pages = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.query(TABLE_PAGES,
+                    null,
+                    COLUMN_PAGE_NOTEBOOK_ID + "=?",
+                    new String[] { notebookId },
+                    null, null,
+                    COLUMN_PAGE_NUMBER + " ASC");
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    pages.add(cursorToPage(cursor));
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return pages;
+    }
+
+    /**
+     * Get page by ID
+     */
+    public Page getPageById(String pageId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Page page = null;
+        Cursor cursor = null;
+
+        try {
+            cursor = db.query(TABLE_PAGES,
+                    null,
+                    COLUMN_PAGE_ID + "=?",
+                    new String[] { pageId },
+                    null, null, null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                page = cursorToPage(cursor);
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return page;
+    }
+
+    /**
+     * Update page
+     */
+    public boolean updatePage(String pageId, String title, String content) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_PAGE_TITLE, title);
+        values.put(COLUMN_PAGE_CONTENT, content);
+        values.put(COLUMN_PAGE_UPDATED_AT, getCurrentTimestamp());
+
+        int result = db.update(TABLE_PAGES, values, COLUMN_PAGE_ID + "=?", new String[] { pageId });
+
+        // Update notebook timestamp
+        if (result > 0) {
+            Page page = getPageById(pageId);
+            if (page != null) {
+                updateNotebookTimestamp(page.getNotebookId());
+            }
+        }
+
+        return result > 0;
+    }
+
+    /**
+     * Delete page
+     */
+    public boolean deletePage(String pageId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete(TABLE_PAGES, COLUMN_PAGE_ID + "=?", new String[] { pageId });
+        return result > 0;
+    }
+
+    /**
+     * Get page count for a notebook
+     */
+    public int getPageCount(String notebookId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        int count = 0;
+
+        try {
+            cursor = db.rawQuery(
+                    "SELECT COUNT(*) FROM " + TABLE_PAGES + " WHERE " + COLUMN_PAGE_NOTEBOOK_ID + "=?",
+                    new String[] { notebookId });
+
+            if (cursor != null && cursor.moveToFirst()) {
+                count = cursor.getInt(0);
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return count;
+    }
+
+    /**
+     * Update notebook timestamp
+     */
+    private void updateNotebookTimestamp(String notebookId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_NOTEBOOK_UPDATED_AT, getCurrentTimestamp());
+        db.update(TABLE_NOTEBOOKS, values, COLUMN_NOTEBOOK_ID + "=?", new String[] { notebookId });
+    }
+
+    /**
+     * Convert cursor to Page object
+     */
+    private Page cursorToPage(Cursor cursor) {
+        String id = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PAGE_ID));
+        String notebookId = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PAGE_NOTEBOOK_ID));
+        String title = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PAGE_TITLE));
+        String content = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PAGE_CONTENT));
+        int pageNumber = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PAGE_NUMBER));
+
+        return new Page(id, notebookId, title, content, pageNumber);
     }
 }
