@@ -31,8 +31,12 @@ public class SplashActivity extends AppCompatActivity {
 
             Intent intent;
             if (authManager.isLoggedIn()) {
-                // User is logged in, go to home
-                intent = new Intent(SplashActivity.this, HomeActivity.class);
+                // User is logged in, route to appropriate home screen based on role
+                if (authManager.getCurrentUser() != null && authManager.getCurrentUser().isAdmin()) {
+                    intent = new Intent(SplashActivity.this, AdminDashboardActivity.class);
+                } else {
+                    intent = new Intent(SplashActivity.this, UserHomeActivity.class);
+                }
             } else {
                 // User not logged in, go to login
                 intent = new Intent(SplashActivity.this, LoginActivity.class);

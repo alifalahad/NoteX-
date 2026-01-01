@@ -82,7 +82,13 @@ public class LoginActivity extends AppCompatActivity {
             // Login successful
             Toast.makeText(this, "Welcome, " + username + "!", Toast.LENGTH_SHORT).show();
 
-            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+            // Route to appropriate page based on role
+            Intent intent;
+            if (role == User.UserRole.ADMIN) {
+                intent = new Intent(LoginActivity.this, AdminDashboardActivity.class);
+            } else {
+                intent = new Intent(LoginActivity.this, UserHomeActivity.class);
+            }
             startActivity(intent);
             finish();
         } else {

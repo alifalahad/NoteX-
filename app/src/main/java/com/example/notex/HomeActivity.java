@@ -108,7 +108,8 @@ public class HomeActivity extends AppCompatActivity {
         View btnManageUsers = contentView.findViewById(R.id.btnManageUsers);
         if (btnManageUsers != null) {
             btnManageUsers.setOnClickListener(v -> {
-                Toast.makeText(this, "Manage Users feature coming soon!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(HomeActivity.this, UserListActivity.class);
+                startActivity(intent);
             });
         }
 

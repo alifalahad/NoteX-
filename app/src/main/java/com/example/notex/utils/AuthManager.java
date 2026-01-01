@@ -3,15 +3,12 @@ package com.example.notex.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.notex.database.DatabaseHelper;
 import com.example.notex.models.User;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * AuthManager - Singleton class for managing user authentication and sessions.
- * Provides placeholder authentication logic with hardcoded demo users.
- * Will be replaced with SQLite database integration in future phases.
+ * Now uses DatabaseHelper for persistent storage.
  */
 public class AuthManager {
 
@@ -24,36 +21,12 @@ public class AuthManager {
     private static final String KEY_IS_LOGGED_IN = "is_logged_in";
 
     private SharedPreferences sharedPreferences;
+    private DatabaseHelper databaseHelper;
     private User currentUser;
-
-    // Placeholder demo users (hardcoded for now)
-    private static final Map<String, DemoUser> DEMO_USERS = new HashMap<>();
-
-    static {
-        DEMO_USERS.put("demo_user",
-                new DemoUser("1", "demo_user", "user@notex.com", "password123", User.UserRole.USER));
-        DEMO_USERS.put("admin", new DemoUser("2", "admin", "admin@notex.com", "admin123", User.UserRole.ADMIN));
-        DEMO_USERS.put("john", new DemoUser("3", "john", "john@notex.com", "john123", User.UserRole.USER));
-    }
-
-    private static class DemoUser {
-        String id;
-        String username;
-        String email;
-        String password; // Plain text for demo only
-        User.UserRole role;
-
-        DemoUser(String id, String username, String email, String password, User.UserRole role) {
-            this.id = id;
-            this.username = username;
-            this.email = email;
-            this.password = password;
-            this.role = role;
-        }
-    }
 
     private AuthManager(Context context) {
         sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        databaseHelper = DatabaseHelper.getInstance(context);
         loadUserFromPreferences();
     }
 
@@ -73,24 +46,14 @@ public class AuthManager {
      * @return true if login successful, false otherwise
      */
     public boolean login(String username, String password, User.UserRole expectedRole) {
-        // Check against demo users
-        DemoUser demoUser = DEMO_USERS.get(username);
+        // Normalize username (case-insensitive)
+        String normalizedUsername = username.toLowerCase().trim();
 
-        if (demoUser != null && demoUser.password.equals(password)) {
-            // Verify role matches
-            if (demoUser.role != expectedRole) {
-                return false; // Wrong role selected
-            }
+        // Validate user against database
+        User user = databaseHelper.validateUser(normalizedUsername, password, expectedRole);
 
-            // Create user object
-            currentUser = new User(
-                    demoUser.id,
-                    demoUser.username,
-                    demoUser.email,
-                    hashPassword(password), // In real app, use bcrypt
-                    demoUser.role);
-
-            // Save to SharedPreferences
+        if (user != null) {
+            currentUser = user;
             saveUserToPreferences();
             return true;
         }
@@ -99,7 +62,7 @@ public class AuthManager {
     }
 
     /**
-     * Register a new user (placeholder implementation).
+     * Register a new user.
      * 
      * @param username Username
      * @param email    Email
@@ -108,17 +71,16 @@ public class AuthManager {
      * @return true if registration successful
      */
     public boolean register(String username, String email, String password, User.UserRole role) {
+        // Normalize username (case-insensitive)
+        String normalizedUsername = username.toLowerCase().trim();
+
         // Check if username already exists
-        if (DEMO_USERS.containsKey(username)) {
+        if (databaseHelper.usernameExists(normalizedUsername)) {
             return false;
         }
 
-        // In real implementation, this would save to database
-        // For now, just add to in-memory map
-        String newId = String.valueOf(DEMO_USERS.size() + 1);
-        DEMO_USERS.put(username, new DemoUser(newId, username, email, password, role));
-
-        return true;
+        // Add user to database
+        return databaseHelper.addUser(normalizedUsername, email, password, role);
     }
 
     /**
@@ -145,6 +107,13 @@ public class AuthManager {
      */
     public User getCurrentUser() {
         return currentUser;
+    }
+
+    /**
+     * Get database helper instance
+     */
+    public DatabaseHelper getDatabaseHelper() {
+        return databaseHelper;
     }
 
     /**
@@ -189,17 +158,6 @@ public class AuthManager {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
-    }
-
-    /**
-     * Simple password hashing (placeholder - use bcrypt in production).
-     * 
-     * @param password Plain text password
-     * @return Hashed password
-     */
-    private String hashPassword(String password) {
-        // In production, use BCrypt or PBKDF2
-        return "hashed_" + password;
     }
 
     /**

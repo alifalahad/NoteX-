@@ -40,6 +40,21 @@
             android:name=".HomeActivity"
             android:exported="false" />
         
+        <!-- User List Activity (Admin) -->
+        <activity
+            android:name=".UserListActivity"
+            android:exported="false" />
+        
+        <!-- User Home Activity -->
+        <activity
+            android:name=".UserHomeActivity"
+            android:exported="false" />
+        
+        <!-- Admin Dashboard Activity -->
+        <activity
+            android:name=".AdminDashboardActivity"
+            android:exported="false" />
+        
         <!-- Original MainActivity (kept for reference, not used) -->
         <activity
             android:name=".MainActivity"
