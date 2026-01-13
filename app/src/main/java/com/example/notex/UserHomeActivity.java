@@ -128,9 +128,12 @@ public class UserHomeActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        // Count reminders and events
+        int remindersCount = db.getRemindersCount(String.valueOf(currentUser.getId()));
+        
         binding.tvNotebookCount.setText(String.valueOf(notebookCount));
         binding.tvNotesCount.setText(String.valueOf(documentsCount));
-        binding.tvTagsCount.setText("0");
+        binding.tvRemindersCount.setText(String.valueOf(remindersCount));
     }
 
     @Override

@@ -1,9 +1,6 @@
 package com.example.notex.adapters;
 
 import android.content.Context;
-import android.media.MediaPlayer;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
@@ -36,7 +33,6 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
     private OnReminderActionListener listener;
     private Handler handler;
     private Runnable updateTimerRunnable;
-    private Set<String> playedAlarms; // Track which reminders have played sound
     private Set<String> completedReminders; // Track completed reminders
 
     public interface OnReminderActionListener {
@@ -50,7 +46,6 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
         this.reminders = new ArrayList<>();
         this.listener = listener;
         this.handler = new Handler(Looper.getMainLooper());
-        this.playedAlarms = new HashSet<>();
         this.completedReminders = new HashSet<>();
         startTimerUpdates();
     }
@@ -125,12 +120,6 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
             // Overdue/Missed - Gray/Ash vibe
             holder.priorityBar.setBackgroundColor(0xFF6B7280);
             holder.cardReminder.setCardBackgroundColor(0xFFF3F4F6);
-            
-            // Play sound if not already played
-            if (!playedAlarms.contains(reminder.getId())) {
-                playAlarmSound();
-                playedAlarms.add(reminder.getId());
-            }
         } else {
             // Active - Priority color
             holder.priorityBar.setBackgroundColor(priorityColor);
@@ -192,19 +181,6 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
             completedReminders.add(reminder.getId());
             if (listener != null) listener.onComplete(reminder);
         });
-    }
-
-    private void playAlarmSound() {
-        try {
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            MediaPlayer mp = MediaPlayer.create(context, notification);
-            if (mp != null) {
-                mp.setOnCompletionListener(MediaPlayer::release);
-                mp.start();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void updateCountdown(ReminderViewHolder holder, Reminder reminder, boolean isCompleted) {

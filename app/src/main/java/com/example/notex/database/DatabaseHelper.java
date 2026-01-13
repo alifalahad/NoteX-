@@ -603,6 +603,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return count;
     }
 
+    public int getRemindersCount(String userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        int count = 0;
+
+        try {
+            cursor = db.rawQuery(
+                    "SELECT COUNT(*) FROM " + TABLE_REMINDERS + " WHERE " + COLUMN_USER_ID + "=?",
+                    new String[] { userId });
+
+            if (cursor != null && cursor.moveToFirst()) {
+                count = cursor.getInt(0);
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return count;
+    }
+
     /**
      * Convert cursor to Notebook object
      */

@@ -375,21 +375,27 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Low"
-                    android:checked="true" />
+                    android:checked="true"
+                    app:chipBackgroundColor="@color/chip_low_background"
+                    android:textColor="@color/chip_low_text" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipMedium"
                     style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Medium" />
+                    android:text="Medium"
+                    app:chipBackgroundColor="@color/chip_medium_background"
+                    android:textColor="@color/chip_medium_text" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipHigh"
                     style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="High" />
+                    android:text="High"
+                    app:chipBackgroundColor="@color/chip_high_background"
+                    android:textColor="@color/chip_high_text" />
 
             </com.google.android.material.chip.ChipGroup>
 
