@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="#F8FAFC"
     android:fitsSystemWindows="true">
 
     <!-- Toolbar -->
@@ -28,20 +28,20 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:padding="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:orientation="vertical">
 
-            <!-- Type Selection -->
+            <!-- Type -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Type"
-                android:textColor="#1F2937"
+                android:textColor="#0F172A"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
@@ -50,7 +50,7 @@
                 android:id="@+id/chipGroupType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="16dp"
                 app:singleSelection="true"
                 app:selectionRequired="true">
 
@@ -84,14 +84,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:hint="Title"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+                app:boxBackgroundColor="#F1F5F9"
+                app:hintTextColor="#94A3B8"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    android:textColor="#1F2937" />
+                    android:textColor="#0F172A"
+                    android:maxLines="1" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -99,103 +102,212 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="16dp"
                 android:hint="Description (Optional)"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+                app:boxBackgroundColor="#F1F5F9"
+                app:hintTextColor="#94A3B8"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
-                    android:minLines="2"
-                    android:textColor="#1F2937" />
+                    android:textColor="#0F172A"
+                    android:lines="3" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Date and Time -->
+            <!-- Trigger Type -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="When"
-                android:textColor="#1F2937"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
-
-            <LinearLayout
-                android:id="@+id/layoutTimeSettings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="20dp">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSelectDate"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    android:text="Select Date"
-                    app:icon="@android:drawable/ic_menu_my_calendar" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSelectTime"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Select Time"
-                    app:icon="@android:drawable/ic_menu_recent_history" />
-
-            </LinearLayout>
-
-            <!-- Quick Presets -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Quick Presets"
-                android:textColor="#1F2937"
+                android:text="Trigger"
+                android:textColor="#0F172A"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
 
             <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipGroupPresets"
+                android:id="@+id/chipGroupTrigger"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="16dp"
+                app:singleSelection="true"
+                app:selectionRequired="true">
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chipIn1Hour"
-                    style="@style/Widget.Material3.Chip.Suggestion"
+                    android:id="@+id/chipTime"
+                    style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="In 1 hour" />
+                    android:text="⏰ Time"
+                    android:checked="true" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chipToday6PM"
-                    style="@style/Widget.Material3.Chip.Suggestion"
+                    android:id="@+id/chipLocation"
+                    style="@style/Widget.Material3.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Today 6 PM" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipTomorrowMorning"
-                    style="@style/Widget.Material3.Chip.Suggestion"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tomorrow 9 AM" />
+                    android:text="📍 Location" />
 
             </com.google.android.material.chip.ChipGroup>
+
+            <!-- Time-based Settings -->
+            <LinearLayout
+                android:id="@+id/layoutTimeSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="When"
+                    android:textColor="#0F172A"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSelectDate"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        android:text="Select Date"
+                        android:textColor="#6366F1"
+                        app:strokeColor="#6366F1"
+                        app:icon="@android:drawable/ic_menu_my_calendar"
+                        app:iconTint="#6366F1" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSelectTime"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Select Time"
+                        android:textColor="#6366F1"
+                        app:strokeColor="#6366F1"
+                        app:icon="@android:drawable/ic_menu_recent_history"
+                        app:iconTint="#6366F1" />
+
+                </LinearLayout>
+
+                <!-- Quick Presets -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Quick Presets"
+                    android:textColor="#475569"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="8dp" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupPresets"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipIn1Hour"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="In 1 hour" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipToday6PM"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Today 6 PM" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipTomorrowMorning"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tomorrow 9 AM" />
+
+                </com.google.android.material.chip.ChipGroup>
+
+            </LinearLayout>
+
+            <!-- Location-based Settings -->
+            <LinearLayout
+                android:id="@+id/layoutLocationSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Location Name"
+                    app:boxBackgroundColor="#F1F5F9"
+                    app:hintTextColor="#94A3B8"
+                    style="@style/Widget.Material3.TextInputLayout.FilledBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:textColor="#0F172A" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reminder Radius"
+                    android:textColor="#0F172A"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderRadius"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:valueFrom="50"
+                    android:valueTo="1000"
+                    android:value="100"
+                    android:stepSize="50"
+                    app:thumbColor="#6366F1"
+                    app:trackColorActive="#6366F1"
+                    app:trackColorInactive="#E5E7EB"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/tvRadiusValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="100 meters"
+                    android:textColor="#475569"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="16dp" />
+
+            </LinearLayout>
 
             <!-- Repeat -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Repeat"
-                android:textColor="#1F2937"
+                android:textColor="#0F172A"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
@@ -204,7 +316,7 @@
                 android:id="@+id/chipGroupRepeat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="16dp"
                 app:singleSelection="true"
                 app:selectionRequired="true">
 
@@ -244,7 +356,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Priority"
-                android:textColor="#1F2937"
+                android:textColor="#0F172A"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
@@ -286,7 +398,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Ringtone"
-                android:textColor="#1F2937"
+                android:textColor="#0F172A"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
@@ -299,17 +411,19 @@
                 android:layout_marginBottom="16dp"
                 android:text="Default Notification Sound"
                 android:textColor="#6366F1"
+                app:strokeColor="#6366F1"
                 android:gravity="start|center_vertical"
                 app:icon="@android:drawable/ic_lock_silent_mode_off"
                 app:iconTint="#6366F1" />
 
-            <!-- All Day Checkbox -->
-            <com.google.android.material.checkbox.MaterialCheckBox
+            <!-- All Day Event -->
+            <CheckBox
                 android:id="@+id/checkAllDay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="All Day Event"
-                android:textColor="#1F2937"
+                android:textColor="#0F172A"
+                android:buttonTint="#6366F1"
                 android:layout_marginBottom="80dp" />
 
         </LinearLayout>

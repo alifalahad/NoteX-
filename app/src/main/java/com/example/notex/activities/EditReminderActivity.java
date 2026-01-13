@@ -7,7 +7,10 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,11 +34,14 @@ public class EditReminderActivity extends AppCompatActivity {
 
     private static final int RINGTONE_PICKER_REQUEST = 999;
 
-    private TextInputEditText etTitle, etDescription;
-    private ChipGroup chipGroupType, chipGroupRepeat, chipGroupPriority, chipGroupPresets;
+    private TextInputEditText etTitle, etDescription, etLocation;
+    private ChipGroup chipGroupType, chipGroupRepeat, chipGroupPriority, chipGroupPresets, chipGroupTrigger;
     private MaterialButton btnDate, btnTime, btnSelectRingtone;
     private CheckBox cbAllDay;
     private ExtendedFloatingActionButton fabSave;
+    private LinearLayout layoutTimeSettings, layoutLocationSettings;
+    private com.google.android.material.slider.Slider sliderRadius;
+    private TextView tvRadiusValue;
 
     private DatabaseHelper dbHelper;
     private Reminder reminder;
@@ -81,20 +87,42 @@ public class EditReminderActivity extends AppCompatActivity {
     private void initViews() {
         etTitle = findViewById(R.id.etTitle);
         etDescription = findViewById(R.id.etDescription);
+        etLocation = findViewById(R.id.etLocation);
         chipGroupType = findViewById(R.id.chipGroupType);
         chipGroupRepeat = findViewById(R.id.chipGroupRepeat);
         chipGroupPriority = findViewById(R.id.chipGroupPriority);
         chipGroupPresets = findViewById(R.id.chipGroupPresets);
+        chipGroupTrigger = findViewById(R.id.chipGroupTrigger);
         btnDate = findViewById(R.id.btnSelectDate);
         btnTime = findViewById(R.id.btnSelectTime);
         btnSelectRingtone = findViewById(R.id.btnSelectRingtone);
         cbAllDay = findViewById(R.id.checkAllDay);
         fabSave = findViewById(R.id.fabSave);
+        layoutTimeSettings = findViewById(R.id.layoutTimeSettings);
+        layoutLocationSettings = findViewById(R.id.layoutLocationSettings);
+        sliderRadius = findViewById(R.id.sliderRadius);
+        tvRadiusValue = findViewById(R.id.tvRadiusValue);
     }
 
     private void loadReminderData() {
         etTitle.setText(reminder.getTitle());
         etDescription.setText(reminder.getDescription());
+        
+        // Set trigger type and show appropriate layout
+        if (Reminder.TRIGGER_LOCATION.equals(reminder.getTriggerType())) {
+            chipGroupTrigger.check(R.id.chipLocation);
+            layoutTimeSettings.setVisibility(View.GONE);
+            layoutLocationSettings.setVisibility(View.VISIBLE);
+            
+            // Load location data
+            etLocation.setText(reminder.getLocation());
+            sliderRadius.setValue(reminder.getRadiusMeters());
+            tvRadiusValue.setText(reminder.getRadiusMeters() + " meters");
+        } else {
+            chipGroupTrigger.check(R.id.chipTime);
+            layoutTimeSettings.setVisibility(View.VISIBLE);
+            layoutLocationSettings.setVisibility(View.GONE);
+        }
         
         // Set type
         int typeId = R.id.chipReminder;
@@ -136,6 +164,22 @@ public class EditReminderActivity extends AppCompatActivity {
         btnTime.setOnClickListener(v -> showTimePicker());
         btnSelectRingtone.setOnClickListener(v -> showRingtonePicker());
         fabSave.setOnClickListener(v -> updateReminder());
+
+        // Trigger type switching
+        chipGroupTrigger.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.chipTime) {
+                layoutTimeSettings.setVisibility(View.VISIBLE);
+                layoutLocationSettings.setVisibility(View.GONE);
+            } else if (checkedId == R.id.chipLocation) {
+                layoutTimeSettings.setVisibility(View.GONE);
+                layoutLocationSettings.setVisibility(View.VISIBLE);
+            }
+        });
+
+        // Radius slider
+        sliderRadius.addOnChangeListener((slider, value, fromUser) -> {
+            tvRadiusValue.setText((int)value + " meters");
+        });
 
         // Quick presets
         Chip chipIn1Hour = findViewById(R.id.chipIn1Hour);
@@ -233,6 +277,19 @@ public class EditReminderActivity extends AppCompatActivity {
             return;
         }
 
+        // Check trigger type
+        int selectedTriggerId = chipGroupTrigger.getCheckedChipId();
+        boolean isTimeTrigger = selectedTriggerId == R.id.chipTime;
+
+        // Validate based on trigger type
+        if (!isTimeTrigger) {
+            String location = etLocation.getText().toString().trim();
+            if (location.isEmpty()) {
+                etLocation.setError("Location is required");
+                return;
+            }
+        }
+
         reminder.setTitle(title);
         reminder.setDescription(etDescription.getText().toString().trim());
         
@@ -246,9 +303,18 @@ public class EditReminderActivity extends AppCompatActivity {
             reminder.setType(Reminder.TYPE_REMINDER);
         }
         
-        // Time
-        reminder.setTriggerType(Reminder.TRIGGER_TIME);
-        reminder.setScheduledAt(selectedDateTime.getTimeInMillis());
+        // Set trigger type and related data
+        if (isTimeTrigger) {
+            reminder.setTriggerType(Reminder.TRIGGER_TIME);
+            reminder.setScheduledAt(selectedDateTime.getTimeInMillis());
+        } else {
+            reminder.setTriggerType(Reminder.TRIGGER_LOCATION);
+            reminder.setLocation(etLocation.getText().toString().trim());
+            reminder.setRadiusMeters((int) sliderRadius.getValue());
+            // You can add latitude/longitude here if you implement location picker
+            reminder.setLatitude(0.0);
+            reminder.setLongitude(0.0);
+        }
         
         // Repeat
         int selectedRepeatId = chipGroupRepeat.getCheckedChipId();
@@ -277,9 +343,11 @@ public class EditReminderActivity extends AppCompatActivity {
         // Update in database
         dbHelper.updateReminder(reminder);
         
-        // Reschedule alarm
-        ReminderScheduler.cancelReminder(this, reminder.getId());
-        ReminderScheduler.scheduleReminder(this, reminder);
+        // Reschedule alarm (only for time-based reminders)
+        if (isTimeTrigger) {
+            ReminderScheduler.cancelReminder(this, reminder.getId());
+            ReminderScheduler.scheduleReminder(this, reminder);
+        }
         
         Toast.makeText(this, "Reminder updated!", Toast.LENGTH_SHORT).show();
         finish();
