@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="3dp"
+    app:cardBackgroundColor="#FFFFFF">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <!-- Selection Checkbox -->
+        <CheckBox
+            android:id="@+id/checkboxSelect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:visibility="gone" />
+
+        <!-- Document Icon -->
+        <ImageView
+            android:id="@+id/ivDocumentIcon"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_toEndOf="@id/checkboxSelect"
+            android:layout_marginEnd="12dp"
+            android:src="@android:drawable/ic_menu_gallery"
+            android:scaleType="fitCenter" />
+
+        <!-- Document Info -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/ivDocumentIcon"
+            android:layout_centerVertical="true"
+            android:orientation="vertical"
+            android:layout_marginEnd="12dp">
+
+            <TextView
+                android:id="@+id/tvDocumentName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Document Name"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A1A"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/tvDocumentInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="PDF • 2 pages • 1.2 MB"
+                android:textSize="13sp"
+                android:textColor="#424242"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:id="@+id/tvDocumentDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Jan 12, 2026"
+                android:textSize="12sp"
+                android:textColor="#616161"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

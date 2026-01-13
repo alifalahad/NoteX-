@@ -23,19 +23,21 @@ public class CreateNotebookActivity extends AppCompatActivity {
     private ActivityCreateNotebookBinding binding;
     private AuthManager authManager;
     private DatabaseHelper dbHelper;
-    private String selectedColor = "#2196F3"; // Default blue
+    private String selectedColor = "#5DADE2"; // Default sky blue
 
     private final String[] notebookColors = {
-            "#2196F3", // Blue
-            "#4CAF50", // Green
-            "#FFC107", // Amber
-            "#FF5722", // Deep Orange
-            "#9C27B0", // Purple
-            "#00BCD4", // Cyan
-            "#FF9800", // Orange
-            "#E91E63", // Pink
-            "#795548", // Brown
-            "#607D8B" // Blue Grey
+            "#5DADE2", // Sky Blue
+            "#7FC8A9", // Sage Green
+            "#FFD97D", // Amber Yellow
+            "#FF6B6B", // Coral Red
+            "#A29BFE", // Lavender
+            "#96CEB4", // Mint
+            "#FFB088", // Peach
+            "#E8A0BF", // Rose Pink
+            "#9B72AA", // Purple
+            "#4A90A4", // Ocean Blue
+            "#D4A5A5", // Terracotta
+            "#85C1E2"  // Light Sky
     };
 
     @Override
@@ -56,6 +58,7 @@ public class CreateNotebookActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_arrow);
         }
         binding.toolbar.setNavigationOnClickListener(v -> finish());
     }

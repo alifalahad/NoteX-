@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:fitsSystemWindows="true"
+    android:background="@color/background_cream"
     tools:context=".NotebooksActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -17,10 +18,57 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/primary"
+            android:background="@color/toolbarPrimary"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:title="My Notebooks"
-            app:titleTextColor="@android:color/white" />
+            app:titleTextColor="@color/toolbarOnPrimary" />
+
+        <!-- Search Toolbar -->
+        <LinearLayout
+            android:id="@+id/searchToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/toolbarPrimary"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:visibility="gone">
+
+            <ImageButton
+                android:id="@+id/btnBackSearch"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Back"
+                android:src="@drawable/ic_back_arrow"
+                app:tint="@color/toolbarOnPrimary" />
+
+            <EditText
+                android:id="@+id/etSearch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/toolbarPrimary"
+                android:hint="Search notebooks..."
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:maxLines="1"
+                android:padding="12dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#BBBBBB"
+                android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/btnCloseSearch"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Close"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                app:tint="@color/toolbarOnPrimary" />
+
+        </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -51,14 +99,14 @@
                     android:layout_height="120dp"
                     android:alpha="0.5"
                     android:src="@android:drawable/ic_menu_agenda"
-                    app:tint="@color/primary" />
+                    app:tint="@color/toolbarPrimary" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="No notebooks yet"
-                    android:textColor="@color/text_primary"
+                    android:textColor="@color/inkPrimary"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -95,6 +143,6 @@
         android:contentDescription="Create new notebook"
         android:src="@android:drawable/ic_input_add"
         app:backgroundTint="@color/accent"
-        app:tint="@android:color/white" />
+        app:tint="@color/toolbarOnPrimary" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

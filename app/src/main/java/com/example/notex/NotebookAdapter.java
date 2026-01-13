@@ -2,12 +2,12 @@ package com.example.notex;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
+import android.text.SpannableString;
+import android.text.style.BackgroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -26,6 +26,7 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Notebo
     private Context context;
     private List<Notebook> notebooks;
     private OnNotebookClickListener listener;
+    private String searchQuery = "";
 
     public interface OnNotebookClickListener {
         void onNotebookClick(Notebook notebook);
@@ -33,6 +34,8 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Notebo
         void onPinClick(Notebook notebook);
 
         void onDeleteClick(Notebook notebook);
+
+        void onExportPdfClick(Notebook notebook);
     }
 
     public NotebookAdapter(Context context, List<Notebook> notebooks, OnNotebookClickListener listener) {
@@ -59,14 +62,18 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Notebo
         return notebooks.size();
     }
 
+    public void setSearchQuery(String query) {
+        this.searchQuery = query != null ? query : "";
+        notifyDataSetChanged();
+    }
+
     class NotebookViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvNotebookTitle;
         TextView tvPageCount;
         TextView tvLastUpdated;
-        View colorIndicator;
-        ImageView ivPinned;
         ImageButton btnMoreOptions;
+        com.google.android.material.card.MaterialCardView notebookCard;
 
         public NotebookViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -74,35 +81,43 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Notebo
             tvNotebookTitle = itemView.findViewById(R.id.tvNotebookTitle);
             tvPageCount = itemView.findViewById(R.id.tvPageCount);
             tvLastUpdated = itemView.findViewById(R.id.tvLastUpdated);
-            colorIndicator = itemView.findViewById(R.id.colorIndicator);
-            ivPinned = itemView.findViewById(R.id.ivPinned);
             btnMoreOptions = itemView.findViewById(R.id.btnMoreOptions);
+            notebookCard = itemView.findViewById(R.id.notebookCard);
         }
 
         public void bind(Notebook notebook) {
-            tvNotebookTitle.setText(notebook.getTitle());
+            // Highlight matching text if search query exists
+            String title = notebook.getTitle();
+            if (!searchQuery.isEmpty() && title.toLowerCase().contains(searchQuery.toLowerCase())) {
+                SpannableString spannableTitle = new SpannableString(title);
+                int startIndex = title.toLowerCase().indexOf(searchQuery.toLowerCase());
+                if (startIndex >= 0) {
+                    int endIndex = startIndex + searchQuery.length();
+                    spannableTitle.setSpan(
+                        new BackgroundColorSpan(Color.parseColor("#FFEB3B")),
+                        startIndex,
+                        endIndex,
+                        SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
+                    );
+                }
+                tvNotebookTitle.setText(spannableTitle);
+            } else {
+                tvNotebookTitle.setText(title);
+            }
+            
             tvPageCount.setText(notebook.getPageCount() + " pages");
             tvLastUpdated.setText("Updated recently");
 
-            // Set color indicator
+            // Set plain solid card color
             try {
                 int color = Color.parseColor(notebook.getColor());
-                GradientDrawable drawable = new GradientDrawable();
-                drawable.setShape(GradientDrawable.RECTANGLE);
-                drawable.setColor(color);
-                drawable.setCornerRadius(8);
-                colorIndicator.setBackground(drawable);
+                notebookCard.setCardBackgroundColor(color);
             } catch (Exception e) {
                 // Default color if parsing fails
-                colorIndicator.setBackgroundColor(Color.parseColor("#2196F3"));
+                int defaultColor = Color.parseColor("#5DADE2");
+                notebookCard.setCardBackgroundColor(defaultColor);
             }
 
-            // Show/hide pin icon
-            if (notebook.isPinned()) {
-                ivPinned.setVisibility(View.VISIBLE);
-            } else {
-                ivPinned.setVisibility(View.GONE);
-            }
 
             // Item click
             itemView.setOnClickListener(v -> {
@@ -122,7 +137,12 @@ public class NotebookAdapter extends RecyclerView.Adapter<NotebookAdapter.Notebo
 
                 popup.setOnMenuItemClickListener(item -> {
                     int id = item.getItemId();
-                    if (id == R.id.action_pin) {
+                    if (id == R.id.action_export_pdf) {
+                        if (listener != null) {
+                            listener.onExportPdfClick(notebook);
+                        }
+                        return true;
+                    } else if (id == R.id.action_pin) {
                         if (listener != null) {
                             listener.onPinClick(notebook);
                         }

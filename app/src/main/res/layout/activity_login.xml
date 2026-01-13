@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@color/background">
+    android:background="@color/pageBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/login_title"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/inkPrimary"
             android:textSize="28sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -56,6 +56,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            app:cardBackgroundColor="@color/surface"
             app:cardCornerRadius="16dp"
             app:cardElevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -75,13 +76,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/username_hint"
+                    app:boxStrokeColor="@color/toolbarPrimary"
+                    app:hintTextColor="@color/toolbarPrimary"
                     app:startIconDrawable="@drawable/ic_user"
-                    app:startIconTint="@color/primary">
+                    app:startIconTint="@color/toolbarPrimary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etUsername"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/inkPrimary"
                         android:inputType="textEmailAddress"
                         android:maxLines="1" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -94,14 +98,17 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:hint="@string/password_hint"
+                    app:boxStrokeColor="@color/toolbarPrimary"
+                    app:hintTextColor="@color/toolbarPrimary"
                     app:endIconMode="password_toggle"
                     app:startIconDrawable="@android:drawable/ic_lock_lock"
-                    app:startIconTint="@color/primary">
+                    app:startIconTint="@color/toolbarPrimary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/inkPrimary"
                         android:inputType="textPassword"
                         android:maxLines="1" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -112,11 +119,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="24dp"
+                    android:backgroundTint="@color/accent"
                     android:text="@string/login_as_user"
+                    android:textColor="@color/toolbarOnPrimary"
                     android:textSize="16sp"
                     app:cornerRadius="12dp"
                     app:icon="@drawable/ic_user"
-                    app:iconGravity="textStart" />
+                    app:iconGravity="textStart"
+                    app:iconTint="@color/toolbarOnPrimary" />
 
                 <!-- Login as Admin Button -->
                 <com.google.android.material.button.MaterialButton
@@ -126,11 +136,13 @@
                     android:layout_height="56dp"
                     android:layout_marginTop="12dp"
                     android:text="@string/login_as_admin"
+                    android:textColor="@color/toolbarPrimary"
                     android:textSize="16sp"
                     app:cornerRadius="12dp"
                     app:icon="@drawable/ic_admin"
                     app:iconGravity="textStart"
-                    app:strokeColor="@color/primary"
+                    app:iconTint="@color/toolbarPrimary"
+                    app:strokeColor="@color/toolbarPrimary"
                     app:strokeWidth="2dp" />
 
             </LinearLayout>
@@ -160,7 +172,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:text="@string/register_link"
-                android:textColor="@color/primary"
+                android:textColor="@color/toolbarPrimary"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:clickable="true"

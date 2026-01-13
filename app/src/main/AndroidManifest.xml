@@ -2,6 +2,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permissions for image picker and camera -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    
+    <!-- Permission for audio recording -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
+    
+    <!-- Permissions for reminders and alarms -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,6 +28,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.NoteX">
+        
+        <!-- FileProvider for sharing files (PDF, images) -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
         
         <!-- Splash Activity - Entry Point -->
         <activity
@@ -83,9 +111,53 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         
+        <!-- Scan Documents Activity (Document Library) -->
+        <activity
+            android:name=".ScanDocumentsActivity"
+            android:exported="false" />
+        
+        <!-- Text Viewer Activity -->
+        <activity
+            android:name=".TextViewerActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        
+        <!-- Scan Activity -->
+        <activity
+            android:name=".ScanActivity"
+            android:exported="false" />
+        
+        <!-- Reminders Activity -->
+        <activity
+            android:name=".activities.RemindersActivity"
+            android:exported="false" />
+        
+        <!-- Edit Reminder Activity -->
+        <activity
+            android:name=".activities.EditReminderActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        
+        <!-- Create Reminder Activity -->
+        <activity
+            android:name=".activities.CreateReminderActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        
         <!-- Original MainActivity (kept for reference, not used) -->
         <activity
             android:name=".MainActivity"
+            android:exported="false" />
+        
+        <!-- Broadcast Receivers for Reminders -->
+        <receiver
+            android:name=".ReminderReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        
+        <receiver
+            android:name=".ReminderActionReceiver"
+            android:enabled="true"
             android:exported="false" />
             
     </application>

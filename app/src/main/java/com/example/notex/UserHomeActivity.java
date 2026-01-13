@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.notex.databinding.ActivityUserHomeBinding;
 import com.example.notex.models.User;
 import com.example.notex.utils.AuthManager;
+import com.example.notex.activities.RemindersActivity;
 
 /**
  * UserHomeActivity - Main home screen for regular users.
@@ -78,6 +79,18 @@ public class UserHomeActivity extends AppCompatActivity {
             // startActivity(intent);
         });
 
+        // Scan Documents
+        binding.cardScanDocuments.setOnClickListener(v -> {
+            Intent intent = new Intent(UserHomeActivity.this, ScanDocumentsActivity.class);
+            startActivity(intent);
+        });
+
+        // Reminders & Events
+        binding.cardReminders.setOnClickListener(v -> {
+            Intent intent = new Intent(UserHomeActivity.this, RemindersActivity.class);
+            startActivity(intent);
+        });
+
         // Settings
         binding.cardSettings.setOnClickListener(v -> {
             Toast.makeText(this, "Settings - Coming soon!", Toast.LENGTH_SHORT).show();
@@ -97,8 +110,26 @@ public class UserHomeActivity extends AppCompatActivity {
         com.example.notex.database.DatabaseHelper db = com.example.notex.database.DatabaseHelper.getInstance(this);
         int notebookCount = db.getNotebookCount(currentUser.getId());
 
+        // Count documents in scanned_documents folder
+        int documentsCount = 0;
+        try {
+            java.io.File docsDir = new java.io.File(getExternalFilesDir(null), "scanned_documents");
+            if (docsDir.exists() && docsDir.isDirectory()) {
+                java.io.File[] files = docsDir.listFiles();
+                if (files != null) {
+                    for (java.io.File file : files) {
+                        if (file.isFile() && (file.getName().endsWith(".pdf") || file.getName().endsWith(".txt"))) {
+                            documentsCount++;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         binding.tvNotebookCount.setText(String.valueOf(notebookCount));
-        binding.tvNotesCount.setText("0");
+        binding.tvNotesCount.setText(String.valueOf(documentsCount));
         binding.tvTagsCount.setText("0");
     }
 

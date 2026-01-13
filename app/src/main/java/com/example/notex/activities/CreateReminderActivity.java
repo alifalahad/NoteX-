@@ -1,0 +1,211 @@
+package com.example.notex.activities;
+
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
+import android.os.Bundle;
+import android.widget.CheckBox;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.example.notex.R;
+import com.example.notex.ReminderScheduler;
+import com.example.notex.database.DatabaseHelper;
+import com.example.notex.models.Reminder;
+import com.example.notex.models.User;
+import com.example.notex.utils.AuthManager;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.UUID;
+
+public class CreateReminderActivity extends AppCompatActivity {
+
+    private TextInputEditText etTitle, etDescription;
+    private ChipGroup chipGroupType, chipGroupRepeat, chipGroupPriority, chipGroupPresets;
+    private MaterialButton btnDate, btnTime;
+    private CheckBox cbAllDay;
+    private ExtendedFloatingActionButton fabSave;
+
+    private DatabaseHelper dbHelper;
+    private Calendar selectedDateTime;
+    private String userId;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_create_reminder);
+
+        // Get user
+        User currentUser = AuthManager.getInstance(this).getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "Please log in first", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        userId = String.valueOf(currentUser.getId());
+
+        dbHelper = DatabaseHelper.getInstance(this);
+        selectedDateTime = Calendar.getInstance();
+        selectedDateTime.add(Calendar.HOUR_OF_DAY, 1); // Default to 1 hour from now
+
+        // Setup toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(v -> finish());
+
+        initViews();
+        setupListeners();
+        updateDateTimeButtons();
+    }
+
+    private void initViews() {
+        etTitle = findViewById(R.id.etTitle);
+        etDescription = findViewById(R.id.etDescription);
+        chipGroupType = findViewById(R.id.chipGroupType);
+        chipGroupRepeat = findViewById(R.id.chipGroupRepeat);
+        chipGroupPriority = findViewById(R.id.chipGroupPriority);
+        chipGroupPresets = findViewById(R.id.chipGroupPresets);
+        btnDate = findViewById(R.id.btnSelectDate);
+        btnTime = findViewById(R.id.btnSelectTime);
+        cbAllDay = findViewById(R.id.checkAllDay);
+        fabSave = findViewById(R.id.fabSave);
+    }
+
+    private void setupListeners() {
+        btnDate.setOnClickListener(v -> showDatePicker());
+        btnTime.setOnClickListener(v -> showTimePicker());
+        fabSave.setOnClickListener(v -> saveReminder());
+
+        // Quick presets
+        Chip chipIn1Hour = findViewById(R.id.chipIn1Hour);
+        Chip chipToday6PM = findViewById(R.id.chipToday6PM);
+        Chip chipTomorrowMorning = findViewById(R.id.chipTomorrowMorning);
+
+        chipIn1Hour.setOnClickListener(v -> {
+            selectedDateTime = Calendar.getInstance();
+            selectedDateTime.add(Calendar.HOUR_OF_DAY, 1);
+            updateDateTimeButtons();
+        });
+
+        chipToday6PM.setOnClickListener(v -> {
+            selectedDateTime = Calendar.getInstance();
+            selectedDateTime.set(Calendar.HOUR_OF_DAY, 18);
+            selectedDateTime.set(Calendar.MINUTE, 0);
+            updateDateTimeButtons();
+        });
+
+        chipTomorrowMorning.setOnClickListener(v -> {
+            selectedDateTime = Calendar.getInstance();
+            selectedDateTime.add(Calendar.DAY_OF_MONTH, 1);
+            selectedDateTime.set(Calendar.HOUR_OF_DAY, 9);
+            selectedDateTime.set(Calendar.MINUTE, 0);
+            updateDateTimeButtons();
+        });
+    }
+
+    private void showDatePicker() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                (view, year, month, dayOfMonth) -> {
+                    selectedDateTime.set(Calendar.YEAR, year);
+                    selectedDateTime.set(Calendar.MONTH, month);
+                    selectedDateTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                    updateDateTimeButtons();
+                },
+                selectedDateTime.get(Calendar.YEAR),
+                selectedDateTime.get(Calendar.MONTH),
+                selectedDateTime.get(Calendar.DAY_OF_MONTH)
+        );
+        datePickerDialog.show();
+    }
+
+    private void showTimePicker() {
+        TimePickerDialog timePickerDialog = new TimePickerDialog(
+                this,
+                (view, hourOfDay, minute) -> {
+                    selectedDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    selectedDateTime.set(Calendar.MINUTE, minute);
+                    updateDateTimeButtons();
+                },
+                selectedDateTime.get(Calendar.HOUR_OF_DAY),
+                selectedDateTime.get(Calendar.MINUTE),
+                false
+        );
+        timePickerDialog.show();
+    }
+
+    private void updateDateTimeButtons() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM dd", Locale.getDefault());
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        
+        btnDate.setText(dateFormat.format(selectedDateTime.getTime()));
+        btnTime.setText(timeFormat.format(selectedDateTime.getTime()));
+    }
+
+    private void saveReminder() {
+        String title = etTitle.getText().toString().trim();
+        
+        if (title.isEmpty()) {
+            etTitle.setError("Title is required");
+            return;
+        }
+
+        // Get type first
+        int selectedTypeId = chipGroupType.getCheckedChipId();
+        String type = Reminder.TYPE_REMINDER;
+        if (selectedTypeId == R.id.chipEvent) {
+            type = Reminder.TYPE_EVENT;
+        } else if (selectedTypeId == R.id.chipTask) {
+            type = Reminder.TYPE_TASK;
+        }
+
+        String id = UUID.randomUUID().toString();
+        Reminder reminder = new Reminder(id, String.valueOf(userId), title, type);
+        reminder.setDescription(etDescription.getText().toString().trim());
+        
+        // Time
+        reminder.setTriggerType(Reminder.TRIGGER_TIME);
+        reminder.setScheduledAt(selectedDateTime.getTimeInMillis());
+        
+        // Repeat
+        int selectedRepeatId = chipGroupRepeat.getCheckedChipId();
+        if (selectedRepeatId == R.id.chipDaily) {
+            reminder.setRepeatType("daily");
+        } else if (selectedRepeatId == R.id.chipWeekly) {
+            reminder.setRepeatType("weekly");
+        } else if (selectedRepeatId == R.id.chipMonthly) {
+            reminder.setRepeatType("monthly");
+        } else {
+            reminder.setRepeatType("none");
+        }
+        
+        // Priority
+        int selectedPriorityId = chipGroupPriority.getCheckedChipId();
+        if (selectedPriorityId == R.id.chipMedium) {
+            reminder.setPriority(Reminder.PRIORITY_MEDIUM);
+        } else if (selectedPriorityId == R.id.chipHigh) {
+            reminder.setPriority(Reminder.PRIORITY_HIGH);
+        } else {
+            reminder.setPriority(Reminder.PRIORITY_LOW);
+        }
+        
+        reminder.setAllDay(cbAllDay.isChecked());
+
+        // Save to database
+        dbHelper.createReminder(reminder);
+        
+        // Schedule alarm
+        ReminderScheduler.scheduleReminder(this, reminder);
+        
+        Toast.makeText(this, "Reminder created!", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+}

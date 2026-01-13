@@ -9,6 +9,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.example.notex.models.User;
 import com.example.notex.models.Notebook;
 import com.example.notex.models.Page;
+import com.example.notex.models.Reminder;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,7 +28,7 @@ import java.util.UUID;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "notex.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4; // Updated for reminders table
 
     // Users table
     private static final String TABLE_USERS = "users";
@@ -55,6 +59,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_PAGE_NUMBER = "page_number";
     private static final String COLUMN_PAGE_CREATED_AT = "created_at";
     private static final String COLUMN_PAGE_UPDATED_AT = "updated_at";
+
+    // Reminders table
+    private static final String TABLE_REMINDERS = "reminders";
+    private static final String COLUMN_REMINDER_ID = "id";
+    private static final String COLUMN_REMINDER_USER_ID = "user_id";
+    private static final String COLUMN_REMINDER_NOTE_ID = "note_id";
+    private static final String COLUMN_REMINDER_NOTEBOOK_ID = "notebook_id";
+    private static final String COLUMN_REMINDER_TITLE = "title";
+    private static final String COLUMN_REMINDER_DESCRIPTION = "description";
+    private static final String COLUMN_REMINDER_TYPE = "type";
+    private static final String COLUMN_REMINDER_TRIGGER_TYPE = "trigger_type";
+    private static final String COLUMN_REMINDER_SCHEDULED_AT = "scheduled_at";
+    private static final String COLUMN_REMINDER_LOCATION = "location";
+    private static final String COLUMN_REMINDER_LATITUDE = "latitude";
+    private static final String COLUMN_REMINDER_LONGITUDE = "longitude";
+    private static final String COLUMN_REMINDER_RADIUS = "radius_meters";
+    private static final String COLUMN_REMINDER_REPEAT_TYPE = "repeat_type";
+    private static final String COLUMN_REMINDER_REPEAT_RULE = "repeat_rule";
+    private static final String COLUMN_REMINDER_PRIORITY = "priority";
+    private static final String COLUMN_REMINDER_IS_COMPLETED = "is_completed";
+    private static final String COLUMN_REMINDER_IS_NOTIFIED = "is_notified";
+    private static final String COLUMN_REMINDER_IS_ALL_DAY = "is_all_day";
+    private static final String COLUMN_REMINDER_TIMEZONE = "timezone";
+    private static final String COLUMN_REMINDER_CREATED_AT = "created_at";
+    private static final String COLUMN_REMINDER_UPDATED_AT = "updated_at";
 
     private static DatabaseHelper instance;
 
@@ -109,16 +138,69 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + ")";
         db.execSQL(CREATE_PAGES_TABLE);
 
+        // Create reminders table
+        String CREATE_REMINDERS_TABLE = "CREATE TABLE " + TABLE_REMINDERS + "("
+                + COLUMN_REMINDER_ID + " TEXT PRIMARY KEY,"
+                + COLUMN_REMINDER_USER_ID + " TEXT NOT NULL,"
+                + COLUMN_REMINDER_NOTE_ID + " TEXT,"
+                + COLUMN_REMINDER_NOTEBOOK_ID + " TEXT,"
+                + COLUMN_REMINDER_TITLE + " TEXT NOT NULL,"
+                + COLUMN_REMINDER_DESCRIPTION + " TEXT,"
+                + COLUMN_REMINDER_TYPE + " TEXT NOT NULL,"
+                + COLUMN_REMINDER_TRIGGER_TYPE + " TEXT NOT NULL,"
+                + COLUMN_REMINDER_SCHEDULED_AT + " INTEGER,"
+                + COLUMN_REMINDER_LOCATION + " TEXT,"
+                + COLUMN_REMINDER_LATITUDE + " REAL,"
+                + COLUMN_REMINDER_LONGITUDE + " REAL,"
+                + COLUMN_REMINDER_RADIUS + " INTEGER,"
+                + COLUMN_REMINDER_REPEAT_TYPE + " TEXT,"
+                + COLUMN_REMINDER_REPEAT_RULE + " TEXT,"
+                + COLUMN_REMINDER_PRIORITY + " INTEGER,"
+                + COLUMN_REMINDER_IS_COMPLETED + " INTEGER DEFAULT 0,"
+                + COLUMN_REMINDER_IS_NOTIFIED + " INTEGER DEFAULT 0,"
+                + COLUMN_REMINDER_IS_ALL_DAY + " INTEGER DEFAULT 0,"
+                + COLUMN_REMINDER_TIMEZONE + " TEXT,"
+                + COLUMN_REMINDER_CREATED_AT + " INTEGER,"
+                + COLUMN_REMINDER_UPDATED_AT + " INTEGER,"
+                + "FOREIGN KEY(" + COLUMN_REMINDER_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_ID + ")"
+                + ")";
+        db.execSQL(CREATE_REMINDERS_TABLE);
+
         // Insert default users
         insertDefaultUsers(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PAGES);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTEBOOKS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
-        onCreate(db);
+        if (oldVersion < 4) {
+            // Add reminders table for version 4
+            String CREATE_REMINDERS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_REMINDERS + "("
+                    + COLUMN_REMINDER_ID + " TEXT PRIMARY KEY,"
+                    + COLUMN_REMINDER_USER_ID + " TEXT NOT NULL,"
+                    + COLUMN_REMINDER_NOTE_ID + " TEXT,"
+                    + COLUMN_REMINDER_NOTEBOOK_ID + " TEXT,"
+                    + COLUMN_REMINDER_TITLE + " TEXT NOT NULL,"
+                    + COLUMN_REMINDER_DESCRIPTION + " TEXT,"
+                    + COLUMN_REMINDER_TYPE + " TEXT NOT NULL,"
+                    + COLUMN_REMINDER_TRIGGER_TYPE + " TEXT NOT NULL,"
+                    + COLUMN_REMINDER_SCHEDULED_AT + " INTEGER,"
+                    + COLUMN_REMINDER_LOCATION + " TEXT,"
+                    + COLUMN_REMINDER_LATITUDE + " REAL,"
+                    + COLUMN_REMINDER_LONGITUDE + " REAL,"
+                    + COLUMN_REMINDER_RADIUS + " INTEGER,"
+                    + COLUMN_REMINDER_REPEAT_TYPE + " TEXT,"
+                    + COLUMN_REMINDER_REPEAT_RULE + " TEXT,"
+                    + COLUMN_REMINDER_PRIORITY + " INTEGER,"
+                    + COLUMN_REMINDER_IS_COMPLETED + " INTEGER DEFAULT 0,"
+                    + COLUMN_REMINDER_IS_NOTIFIED + " INTEGER DEFAULT 0,"
+                    + COLUMN_REMINDER_IS_ALL_DAY + " INTEGER DEFAULT 0,"
+                    + COLUMN_REMINDER_TIMEZONE + " TEXT,"
+                    + COLUMN_REMINDER_CREATED_AT + " INTEGER,"
+                    + COLUMN_REMINDER_UPDATED_AT + " INTEGER,"
+                    + "FOREIGN KEY(" + COLUMN_REMINDER_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_ID + ")"
+                    + ")";
+            db.execSQL(CREATE_REMINDERS_TABLE);
+        }
     }
 
     private void insertDefaultUsers(SQLiteDatabase db) {
@@ -532,7 +614,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int isPinnedInt = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_IS_PINNED));
         boolean isPinned = isPinnedInt == 1;
 
-        return new Notebook(id, userId, title, color, isPinned);
+        Notebook notebook = new Notebook(id, userId, title, color, isPinned);
+        // Set page count for display
+        notebook.setPageCount(getPageCount(id));
+        return notebook;
     }
 
     // ==================== Page Methods ====================
@@ -668,7 +753,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int count = 0;
 
         try {
-            cursor = db.rawQuery(
+                cursor = db.rawQuery(
                     "SELECT COUNT(*) FROM " + TABLE_PAGES + " WHERE " + COLUMN_PAGE_NOTEBOOK_ID + "=?",
                     new String[] { notebookId });
 
@@ -678,6 +763,49 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } finally {
             if (cursor != null) {
                 cursor.close();
+            }
+        }
+
+        // If this notebook uses the multi-page canvas editor, all pages are stored
+        // inside a single DB page row as JSON. In that case, try to parse the real
+        // page count from the stored JSON.
+        if (count == 1) {
+            Cursor contentCursor = null;
+            try {
+                contentCursor = db.query(
+                        TABLE_PAGES,
+                        new String[] { COLUMN_PAGE_CONTENT },
+                        COLUMN_PAGE_NOTEBOOK_ID + "=?",
+                        new String[] { notebookId },
+                        null,
+                        null,
+                        COLUMN_PAGE_NUMBER + " ASC",
+                        "1");
+
+                if (contentCursor != null && contentCursor.moveToFirst()) {
+                    String content = contentCursor.getString(0);
+                    if (content != null && !content.isEmpty()) {
+                        try {
+                            JSONObject json = new JSONObject(content);
+                            if (json.has("totalPages")) {
+                                int total = json.optInt("totalPages", 1);
+                                return Math.max(1, total);
+                            }
+                            if (json.has("pages")) {
+                                JSONArray pages = json.optJSONArray("pages");
+                                if (pages != null) {
+                                    return Math.max(1, pages.length());
+                                }
+                            }
+                        } catch (Exception ignored) {
+                            // Not a multi-page JSON payload; fall back to row count
+                        }
+                    }
+                }
+            } finally {
+                if (contentCursor != null) {
+                    contentCursor.close();
+                }
             }
         }
 
@@ -705,5 +833,244 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int pageNumber = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_PAGE_NUMBER));
 
         return new Page(id, notebookId, title, content, pageNumber);
+    }
+
+    // ==================== REMINDER CRUD OPERATIONS ====================
+
+    /**
+     * Create a new reminder
+     */
+    public String createReminder(Reminder reminder) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(COLUMN_REMINDER_ID, reminder.getId());
+        values.put(COLUMN_REMINDER_USER_ID, reminder.getUserId());
+        values.put(COLUMN_REMINDER_NOTE_ID, reminder.getNoteId());
+        values.put(COLUMN_REMINDER_NOTEBOOK_ID, reminder.getNotebookId());
+        values.put(COLUMN_REMINDER_TITLE, reminder.getTitle());
+        values.put(COLUMN_REMINDER_DESCRIPTION, reminder.getDescription());
+        values.put(COLUMN_REMINDER_TYPE, reminder.getType());
+        values.put(COLUMN_REMINDER_TRIGGER_TYPE, reminder.getTriggerType());
+        values.put(COLUMN_REMINDER_SCHEDULED_AT, reminder.getScheduledAt());
+        values.put(COLUMN_REMINDER_LOCATION, reminder.getLocation());
+        values.put(COLUMN_REMINDER_LATITUDE, reminder.getLatitude());
+        values.put(COLUMN_REMINDER_LONGITUDE, reminder.getLongitude());
+        values.put(COLUMN_REMINDER_RADIUS, reminder.getRadiusMeters());
+        values.put(COLUMN_REMINDER_REPEAT_TYPE, reminder.getRepeatType());
+        values.put(COLUMN_REMINDER_REPEAT_RULE, reminder.getRepeatRule());
+        values.put(COLUMN_REMINDER_PRIORITY, reminder.getPriority());
+        values.put(COLUMN_REMINDER_IS_COMPLETED, reminder.isCompleted() ? 1 : 0);
+        values.put(COLUMN_REMINDER_IS_NOTIFIED, reminder.isNotified() ? 1 : 0);
+        values.put(COLUMN_REMINDER_IS_ALL_DAY, reminder.isAllDay() ? 1 : 0);
+        values.put(COLUMN_REMINDER_TIMEZONE, reminder.getTimezone());
+        values.put(COLUMN_REMINDER_CREATED_AT, reminder.getCreatedAt());
+        values.put(COLUMN_REMINDER_UPDATED_AT, reminder.getUpdatedAt());
+
+        long result = db.insert(TABLE_REMINDERS, null, values);
+        return result != -1 ? reminder.getId() : null;
+    }
+
+    /**
+     * Get all reminders for a user
+     */
+    public List<Reminder> getAllReminders(String userId) {
+        List<Reminder> reminders = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.query(
+                    TABLE_REMINDERS,
+                    null,
+                    COLUMN_REMINDER_USER_ID + "=?",
+                    new String[]{userId},
+                    null,
+                    null,
+                    COLUMN_REMINDER_SCHEDULED_AT + " ASC"
+            );
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    reminders.add(cursorToReminder(cursor));
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return reminders;
+    }
+
+    /**
+     * Get upcoming reminders (not completed, scheduled in future)
+     */
+    public List<Reminder> getUpcomingReminders(String userId) {
+        List<Reminder> reminders = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            long currentTime = System.currentTimeMillis();
+            cursor = db.query(
+                    TABLE_REMINDERS,
+                    null,
+                    COLUMN_REMINDER_USER_ID + "=? AND " + COLUMN_REMINDER_IS_COMPLETED + "=0 AND " +
+                            COLUMN_REMINDER_SCHEDULED_AT + ">?",
+                    new String[]{userId, String.valueOf(currentTime)},
+                    null,
+                    null,
+                    COLUMN_REMINDER_SCHEDULED_AT + " ASC"
+            );
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    reminders.add(cursorToReminder(cursor));
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return reminders;
+    }
+
+    /**
+     * Get reminder by ID
+     */
+    public Reminder getReminderById(String reminderId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        Reminder reminder = null;
+
+        try {
+            cursor = db.query(
+                    TABLE_REMINDERS,
+                    null,
+                    COLUMN_REMINDER_ID + "=?",
+                    new String[]{reminderId},
+                    null,
+                    null,
+                    null
+            );
+
+            if (cursor != null && cursor.moveToFirst()) {
+                reminder = cursorToReminder(cursor);
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return reminder;
+    }
+
+    /**
+     * Update reminder
+     */
+    public boolean updateReminder(Reminder reminder) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(COLUMN_REMINDER_TITLE, reminder.getTitle());
+        values.put(COLUMN_REMINDER_DESCRIPTION, reminder.getDescription());
+        values.put(COLUMN_REMINDER_TYPE, reminder.getType());
+        values.put(COLUMN_REMINDER_TRIGGER_TYPE, reminder.getTriggerType());
+        values.put(COLUMN_REMINDER_SCHEDULED_AT, reminder.getScheduledAt());
+        values.put(COLUMN_REMINDER_LOCATION, reminder.getLocation());
+        values.put(COLUMN_REMINDER_LATITUDE, reminder.getLatitude());
+        values.put(COLUMN_REMINDER_LONGITUDE, reminder.getLongitude());
+        values.put(COLUMN_REMINDER_RADIUS, reminder.getRadiusMeters());
+        values.put(COLUMN_REMINDER_REPEAT_TYPE, reminder.getRepeatType());
+        values.put(COLUMN_REMINDER_REPEAT_RULE, reminder.getRepeatRule());
+        values.put(COLUMN_REMINDER_PRIORITY, reminder.getPriority());
+        values.put(COLUMN_REMINDER_IS_COMPLETED, reminder.isCompleted() ? 1 : 0);
+        values.put(COLUMN_REMINDER_IS_NOTIFIED, reminder.isNotified() ? 1 : 0);
+        values.put(COLUMN_REMINDER_IS_ALL_DAY, reminder.isAllDay() ? 1 : 0);
+        values.put(COLUMN_REMINDER_TIMEZONE, reminder.getTimezone());
+        values.put(COLUMN_REMINDER_UPDATED_AT, System.currentTimeMillis());
+
+        int result = db.update(TABLE_REMINDERS, values, COLUMN_REMINDER_ID + "=?",
+                new String[]{reminder.getId()});
+        return result > 0;
+    }
+
+    /**
+     * Mark reminder as completed
+     */
+    public boolean markReminderCompleted(String reminderId, boolean completed) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_REMINDER_IS_COMPLETED, completed ? 1 : 0);
+        values.put(COLUMN_REMINDER_UPDATED_AT, System.currentTimeMillis());
+
+        int result = db.update(TABLE_REMINDERS, values, COLUMN_REMINDER_ID + "=?",
+                new String[]{reminderId});
+        return result > 0;
+    }
+
+    /**
+     * Delete reminder
+     */
+    public boolean deleteReminder(String reminderId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete(TABLE_REMINDERS, COLUMN_REMINDER_ID + "=?",
+                new String[]{reminderId});
+        return result > 0;
+    }
+
+    /**
+     * Convert cursor to Reminder object
+     */
+    private Reminder cursorToReminder(Cursor cursor) {
+        String id = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_REMINDER_ID));
+        String userId = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_REMINDER_USER_ID));
+        String title = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_REMINDER_TITLE));
+        String type = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_REMINDER_TYPE));
+
+        Reminder reminder = new Reminder(id, userId, title, type);
+        
+        int noteIdIndex = cursor.getColumnIndex(COLUMN_REMINDER_NOTE_ID);
+        if (noteIdIndex >= 0) reminder.setNoteId(cursor.getString(noteIdIndex));
+        
+        int notebookIdIndex = cursor.getColumnIndex(COLUMN_REMINDER_NOTEBOOK_ID);
+        if (notebookIdIndex >= 0) reminder.setNotebookId(cursor.getString(notebookIdIndex));
+        
+        int descIndex = cursor.getColumnIndex(COLUMN_REMINDER_DESCRIPTION);
+        if (descIndex >= 0) reminder.setDescription(cursor.getString(descIndex));
+        
+        reminder.setTriggerType(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_REMINDER_TRIGGER_TYPE)));
+        reminder.setScheduledAt(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_REMINDER_SCHEDULED_AT)));
+        
+        int locationIndex = cursor.getColumnIndex(COLUMN_REMINDER_LOCATION);
+        if (locationIndex >= 0) reminder.setLocation(cursor.getString(locationIndex));
+        
+        reminder.setLatitude(cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_REMINDER_LATITUDE)));
+        reminder.setLongitude(cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_REMINDER_LONGITUDE)));
+        reminder.setRadiusMeters(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_REMINDER_RADIUS)));
+        
+        int repeatTypeIndex = cursor.getColumnIndex(COLUMN_REMINDER_REPEAT_TYPE);
+        if (repeatTypeIndex >= 0) reminder.setRepeatType(cursor.getString(repeatTypeIndex));
+        
+        int repeatRuleIndex = cursor.getColumnIndex(COLUMN_REMINDER_REPEAT_RULE);
+        if (repeatRuleIndex >= 0) reminder.setRepeatRule(cursor.getString(repeatRuleIndex));
+        
+        reminder.setPriority(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_REMINDER_PRIORITY)));
+        reminder.setCompleted(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_REMINDER_IS_COMPLETED)) == 1);
+        reminder.setNotified(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_REMINDER_IS_NOTIFIED)) == 1);
+        reminder.setAllDay(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_REMINDER_IS_ALL_DAY)) == 1);
+        
+        int timezoneIndex = cursor.getColumnIndex(COLUMN_REMINDER_TIMEZONE);
+        if (timezoneIndex >= 0) reminder.setTimezone(cursor.getString(timezoneIndex));
+        
+        reminder.setCreatedAt(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_REMINDER_CREATED_AT)));
+        reminder.setUpdatedAt(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_REMINDER_UPDATED_AT)));
+
+        return reminder;
     }
 }

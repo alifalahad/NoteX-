@@ -4,57 +4,102 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     
-    <!-- Primary colors - Deep Purple/Blue gradient -->
-    <color name="primary">#6366F1</color>
-    <color name="primary_dark">#4F46E5</color>
-    <color name="primary_light">#818CF8</color>
-    <color name="primary_variant">#8B5CF6</color>
+    <!-- GoodNotes Light Theme -->
+    <color name="toolbarPrimary">#2B4A7A</color>
+    <color name="toolbarOnPrimary">#FFFFFF</color>
+    <color name="pageBackground">#FFFFFF</color>
+    <color name="pageCard">#E6E9EF</color>
+    <color name="gridLine">#E0E0E0</color>
+    <color name="inkPrimary">#0B1A2B</color>
+    <color name="accent">#00A3FF</color>
+    <color name="selection">#FFD54F</color>
+    <color name="disabled">#9AA4B2</color>
+
+    <!-- Dark Canvas Theme -->
+    <color name="toolbarPrimaryDark">#23385A</color>
+    <color name="toolbarOnPrimaryDark">#FFFFFF</color>
+    <color name="canvasBackgroundDark">#1E1F22</color>
+    <color name="gridLineDark">#3A3A42</color>
+    <color name="inkLight">#FFFFFF</color>
+    <color name="accentLight">#66B2FF</color>
+    <color name="selectionDark">#FFCF66</color>
     
-    <!-- Secondary colors - Vibrant accent -->
-    <color name="secondary">#EC4899</color>
-    <color name="secondary_dark">#DB2777</color>
-    <color name="secondary_light">#F472B6</color>
-    <color name="accent">#FF5722</color>
+    <!-- Legacy color mappings for compatibility -->
+    <color name="primary">#2B4A7A</color>
+    <color name="primary_dark">#23385A</color>
+    <color name="primary_light">#3D5F8F</color>
+    <color name="primary_variant">#23385A</color>
+    
+    <!-- Secondary/Accent colors -->
+    <color name="secondary">#00A3FF</color>
+    <color name="secondary_dark">#0088CC</color>
+    <color name="secondary_light">#33B5FF</color>
     
     <!-- Tertiary colors -->
-    <color name="tertiary">#14B8A6</color>
-    <color name="tertiary_dark">#0D9488</color>
+    <color name="tertiary">#00A3FF</color>
+    <color name="tertiary_dark">#0088CC</color>
     
     <!-- Surface colors -->
     <color name="surface">#FFFFFF</color>
-    <color name="surface_variant">#F3F4F6</color>
-    <color name="surface_container">#F9FAFB</color>
+    <color name="surface_variant">#E6E9EF</color>
+    <color name="surface_container">#F5F7FA</color>
     
     <!-- Background colors -->
-    <color name="background">#FAFAFA</color>
-    <color name="background_gradient_start">#6366F1</color>
-    <color name="background_gradient_end">#8B5CF6</color>
+    <color name="background">#FFFFFF</color>
+    <color name="background_gradient_start">#2B4A7A</color>
+    <color name="background_gradient_end">#3D5F8F</color>
     
     <!-- Text colors -->
-    <color name="text_primary">#1F2937</color>
-    <color name="text_secondary">#6B7280</color>
-    <color name="text_hint">#9CA3AF</color>
+    <color name="text_primary">#0B1A2B</color>
+    <color name="text_secondary">#4A5568</color>
+    <color name="text_hint">#9AA4B2</color>
     <color name="text_on_primary">#FFFFFF</color>
     
     <!-- Error colors -->
-    <color name="error">#EF4444</color>
-    <color name="error_dark">#DC2626</color>
+    <color name="error">#DC2626</color>
+    <color name="error_dark">#B91C1C</color>
     
     <!-- Success colors -->
-    <color name="success">#10B981</color>
-    <color name="success_dark">#059669</color>
+    <color name="success">#059669</color>
+    <color name="success_dark">#047857</color>
     
     <!-- Outline colors -->
-    <color name="outline">#E5E7EB</color>
+    <color name="outline">#E0E0E0</color>
     <color name="outline_variant">#D1D5DB</color>
     
+    <!-- Highlight -->
+    <color name="highlight">#FFF9C4</color>
+    
     <!-- Dark mode colors -->
-    <color name="surface_dark">#1F2937</color>
-    <color name="background_dark">#111827</color>
-    <color name="text_primary_dark">#F9FAFB</color>
-    <color name="text_secondary_dark">#D1D5DB</color>
+    <color name="surface_dark">#1E1F22</color>
+    <color name="background_dark">#121212</color>
+    <color name="text_primary_dark">#FFFFFF</color>
+    <color name="text_secondary_dark">#E0E0E0</color>
+    
+    <!-- Grid & Canvas -->
+    <color name="grid_line">#E0E0E0</color>
+    <color name="canvas_background">#FFFFFF</color>
+    <color name="page_shadow">#E6E9EF</color>
     
     <!-- Transparent overlays -->
     <color name="scrim">#80000000</color>
     <color name="overlay_light">#1AFFFFFF</color>
+    
+    <!-- GoodNotes-style Notebook Cover Colors -->
+    <color name="notebook_coral">#FF6B6B</color>
+    <color name="notebook_peach">#FFB088</color>
+    <color name="notebook_amber">#FFD97D</color>
+    <color name="notebook_sage">#7FC8A9</color>
+    <color name="notebook_teal">#5DADE2</color>
+    <color name="notebook_sky">#85C1E2</color>
+    <color name="notebook_lavender">#A29BFE</color>
+    <color name="notebook_purple">#9B72AA</color>
+    <color name="notebook_rose">#E8A0BF</color>
+    <color name="notebook_mint">#96CEB4</color>
+    <color name="notebook_ocean">#4A90A4</color>
+    <color name="notebook_terracotta">#D4A5A5</color>
+    
+    <!-- Subtle background variations -->
+    <color name="background_cream">#FDFBF7</color>
+    <color name="background_warm">#FBF9F4</color>
 </resources>
