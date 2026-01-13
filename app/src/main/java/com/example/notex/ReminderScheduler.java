@@ -18,9 +18,18 @@ import java.util.Calendar;
 public class ReminderScheduler {
 
     /**
-     * Schedule a reminder using AlarmManager
+     * Schedule a reminder using AlarmManager or Geofencing
      */
     public static void scheduleReminder(Context context, Reminder reminder) {
+        // Check if location-based reminder
+        if (Reminder.TRIGGER_LOCATION.equals(reminder.getTriggerType())) {
+            // Use geofencing for location-based reminders
+            GeofencingManager geofencingManager = new GeofencingManager(context);
+            geofencingManager.addGeofence(reminder);
+            return;
+        }
+        
+        // Time-based reminder - use AlarmManager
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         
         if (alarmManager == null) {
@@ -105,28 +114,33 @@ public class ReminderScheduler {
      * Cancel a scheduled reminder
      */
     public static void cancelReminder(Context context, String reminderId) {
+        // Cancel both alarm and geofence
+        
+        // Cancel alarm
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         
-        if (alarmManager == null) {
-            return;
-        }
+        if (alarmManager != null) {
+            Intent intent = new Intent(context, ReminderReceiver.class);
+            
+            int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                flags |= PendingIntent.FLAG_IMMUTABLE;
+            }
 
-        Intent intent = new Intent(context, ReminderReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context,
+                reminderId.hashCode(),
+                intent,
+                flags
+            );
+
+            alarmManager.cancel(pendingIntent);
+            pendingIntent.cancel();
+        }
         
-        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            flags |= PendingIntent.FLAG_IMMUTABLE;
-        }
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-            context,
-            reminderId.hashCode(),
-            intent,
-            flags
-        );
-
-        alarmManager.cancel(pendingIntent);
-        pendingIntent.cancel();
+        // Cancel geofence
+        GeofencingManager geofencingManager = new GeofencingManager(context);
+        geofencingManager.removeGeofence(reminderId);
     }
 
     /**
@@ -137,8 +151,15 @@ public class ReminderScheduler {
         java.util.List<Reminder> upcomingReminders = dbHelper.getUpcomingReminders(userId);
         
         for (Reminder reminder : upcomingReminders) {
-            if (reminder.isTimeBased() && !reminder.isCompleted()) {
-                scheduleReminder(context, reminder);
+            if (!reminder.isCompleted()) {
+                if (Reminder.TRIGGER_LOCATION.equals(reminder.getTriggerType())) {
+                    // Reschedule location-based reminder
+                    GeofencingManager geofencingManager = new GeofencingManager(context);
+                    geofencingManager.addGeofence(reminder);
+                } else if (reminder.isTimeBased()) {
+                    // Reschedule time-based reminder
+                    scheduleReminder(context, reminder);
+                }
             }
         }
     }

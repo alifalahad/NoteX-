@@ -49,6 +49,9 @@ dependencies {
     // ML Kit for OCR (future use)
     implementation(libs.mlkit.text.recognition)
     
+    // Google Play Services for Location and Geofencing
+    implementation("com.google.android.gms:play-services-location:21.1.0")
+    
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

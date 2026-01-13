@@ -111,7 +111,9 @@ public class ReminderReceiver extends BroadcastReceiver {
             flags
         );
 
-        // Build notification
+        // Build notification with sound
+        android.net.Uri defaultSoundUri = android.media.RingtoneManager.getDefaultUri(android.media.RingtoneManager.TYPE_NOTIFICATION);
+        
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_menu_my_calendar)
             .setContentTitle(getTypeEmoji(type) + " " + title)
@@ -122,10 +124,38 @@ public class ReminderReceiver extends BroadcastReceiver {
             .setContentIntent(pendingIntent)
             .addAction(android.R.drawable.ic_menu_recent_history, "Snooze 10m", snoozePendingIntent)
             .addAction(android.R.drawable.ic_menu_close_clear_cancel, "Mark Done", donePendingIntent)
-            .setVibrate(new long[]{0, 500, 200, 500});
+            .setVibrate(new long[]{0, 500, 200, 500})
+            .setSound(defaultSoundUri)
+            .setTimeoutAfter(10000); // Sound and notification stay for 10 seconds
 
         // Show notification
         notificationManager.notify(reminderId.hashCode(), builder.build());
+        
+        // Play sound using MediaPlayer for better control (plays for ~3 seconds)
+        playReminderSound(context, defaultSoundUri);
+    }
+
+    private void playReminderSound(Context context, android.net.Uri soundUri) {
+        try {
+            final android.media.MediaPlayer mediaPlayer = android.media.MediaPlayer.create(context, soundUri);
+            if (mediaPlayer != null) {
+                mediaPlayer.setLooping(true); // Loop the sound
+                mediaPlayer.start();
+                
+                // Stop after 3 seconds
+                new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mediaPlayer.isPlaying()) {
+                            mediaPlayer.stop();
+                        }
+                        mediaPlayer.release();
+                    }
+                }, 3000); // 3 seconds
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private String getTypeEmoji(String type) {

@@ -22,6 +22,7 @@ import com.example.notex.database.DatabaseHelper;
 import com.example.notex.models.Reminder;
 import com.example.notex.models.User;
 import com.example.notex.utils.AuthManager;
+import com.example.notex.utils.LocationPermissionHelper;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -114,6 +115,11 @@ public class CreateReminderActivity extends AppCompatActivity {
             } else if (checkedId == R.id.chipLocation) {
                 layoutTimeSettings.setVisibility(View.GONE);
                 layoutLocationSettings.setVisibility(View.VISIBLE);
+                
+                // Request location permissions if not granted
+                if (!LocationPermissionHelper.hasLocationPermissions(this)) {
+                    LocationPermissionHelper.requestLocationPermissions(this);
+                }
             }
         });
 
