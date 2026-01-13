@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Type"
-                android:textColor="#374151"
+                android:textColor="#1F2937"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
@@ -90,7 +90,8 @@
                     android:id="@+id/etTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:textColor="#1F2937" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -107,7 +108,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
-                    android:minLines="2" />
+                    android:minLines="2"
+                    android:textColor="#1F2937" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -116,7 +118,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="When"
-                android:textColor="#374151"
+                android:textColor="#1F2937"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
@@ -154,8 +156,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Quick Presets"
-                android:textColor="#6B7280"
-                android:textSize="12sp"
+                android:textColor="#1F2937"
+                android:textSize="14sp"
+                android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
 
             <com.google.android.material.chip.ChipGroup
@@ -192,7 +195,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Repeat"
-                android:textColor="#374151"
+                android:textColor="#1F2937"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
@@ -241,7 +244,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Priority"
-                android:textColor="#374151"
+                android:textColor="#1F2937"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
@@ -250,7 +253,7 @@
                 android:id="@+id/chipGroupPriority"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="16dp"
                 app:singleSelection="true"
                 app:selectionRequired="true">
 
@@ -278,12 +281,35 @@
 
             </com.google.android.material.chip.ChipGroup>
 
+            <!-- Ringtone Selection -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ringtone"
+                android:textColor="#1F2937"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSelectRingtone"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Default Notification Sound"
+                android:textColor="#6366F1"
+                android:gravity="start|center_vertical"
+                app:icon="@android:drawable/ic_lock_silent_mode_off"
+                app:iconTint="#6366F1" />
+
             <!-- All Day Checkbox -->
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/checkAllDay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="All Day Event"
+                android:textColor="#1F2937"
                 android:layout_marginBottom="80dp" />
 
         </LinearLayout>

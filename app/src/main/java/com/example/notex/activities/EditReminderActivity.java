@@ -2,8 +2,11 @@ package com.example.notex.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
@@ -15,9 +18,9 @@ import com.example.notex.ReminderScheduler;
 import com.example.notex.database.DatabaseHelper;
 import com.example.notex.models.Reminder;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.google.android.material.slider.Slider;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
@@ -26,17 +29,18 @@ import java.util.Locale;
 
 public class EditReminderActivity extends AppCompatActivity {
 
-    private TextInputEditText etTitle, etDescription, etLocation;
-    private ChipGroup chipGroupType, chipGroupTrigger, chipGroupRepeat, chipGroupPriority;
-    private MaterialButton btnDate, btnTime;
-    private Slider sliderRadius;
+    private static final int RINGTONE_PICKER_REQUEST = 999;
+
+    private TextInputEditText etTitle, etDescription;
+    private ChipGroup chipGroupType, chipGroupRepeat, chipGroupPriority, chipGroupPresets;
+    private MaterialButton btnDate, btnTime, btnSelectRingtone;
     private CheckBox cbAllDay;
-    private View layoutTimeSettings, layoutLocationSettings;
     private ExtendedFloatingActionButton fabSave;
 
     private DatabaseHelper dbHelper;
     private Reminder reminder;
     private Calendar selectedDateTime;
+    private Uri selectedRingtoneUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,7 @@ public class EditReminderActivity extends AppCompatActivity {
 
         selectedDateTime = Calendar.getInstance();
         selectedDateTime.setTimeInMillis(reminder.getScheduledAt());
+        selectedRingtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         // Setup toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -76,17 +81,14 @@ public class EditReminderActivity extends AppCompatActivity {
     private void initViews() {
         etTitle = findViewById(R.id.etTitle);
         etDescription = findViewById(R.id.etDescription);
-        etLocation = findViewById(R.id.etLocation);
         chipGroupType = findViewById(R.id.chipGroupType);
-        chipGroupTrigger = findViewById(R.id.chipGroupTrigger);
         chipGroupRepeat = findViewById(R.id.chipGroupRepeat);
         chipGroupPriority = findViewById(R.id.chipGroupPriority);
+        chipGroupPresets = findViewById(R.id.chipGroupPresets);
         btnDate = findViewById(R.id.btnSelectDate);
         btnTime = findViewById(R.id.btnSelectTime);
-        sliderRadius = findViewById(R.id.sliderRadius);
+        btnSelectRingtone = findViewById(R.id.btnSelectRingtone);
         cbAllDay = findViewById(R.id.checkAllDay);
-        layoutTimeSettings = findViewById(R.id.layoutTimeSettings);
-        layoutLocationSettings = findViewById(R.id.layoutLocationSettings);
         fabSave = findViewById(R.id.fabSave);
     }
 
@@ -94,28 +96,19 @@ public class EditReminderActivity extends AppCompatActivity {
         etTitle.setText(reminder.getTitle());
         etDescription.setText(reminder.getDescription());
         
+        // Set type
         int typeId = R.id.chipReminder;
-        if (reminder.getType() == Reminder.TYPE_EVENT) {
+        if (reminder.getType().equals(Reminder.TYPE_EVENT)) {
             typeId = R.id.chipEvent;
-        } else if (reminder.getType() == Reminder.TYPE_TASK) {
+        } else if (reminder.getType().equals(Reminder.TYPE_TASK)) {
             typeId = R.id.chipTask;
         }
         chipGroupType.check(typeId);
         
-        if (reminder.getTriggerType() == Reminder.TRIGGER_TIME) {
-            chipGroupTrigger.check(R.id.chipTime);
-            layoutTimeSettings.setVisibility(View.VISIBLE);
-            layoutLocationSettings.setVisibility(View.GONE);
-        } else {
-            chipGroupTrigger.check(R.id.chipLocation);
-            layoutTimeSettings.setVisibility(View.GONE);
-            layoutLocationSettings.setVisibility(View.VISIBLE);
-            etLocation.setText(reminder.getLocation());
-            sliderRadius.setValue(reminder.getRadiusMeters());
-        }
-        
+        // Update date/time buttons
         updateDateTimeButtons();
         
+        // Set repeat
         int repeatId = R.id.chipNone;
         if ("daily".equals(reminder.getRepeatType())) {
             repeatId = R.id.chipDaily;
@@ -126,6 +119,7 @@ public class EditReminderActivity extends AppCompatActivity {
         }
         chipGroupRepeat.check(repeatId);
         
+        // Set priority
         int priorityId = R.id.chipLow;
         if (reminder.getPriority() == Reminder.PRIORITY_MEDIUM) {
             priorityId = R.id.chipMedium;
@@ -138,19 +132,58 @@ public class EditReminderActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        chipGroupTrigger.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.chipTime) {
-                layoutTimeSettings.setVisibility(View.VISIBLE);
-                layoutLocationSettings.setVisibility(View.GONE);
-            } else {
-                layoutTimeSettings.setVisibility(View.GONE);
-                layoutLocationSettings.setVisibility(View.VISIBLE);
-            }
-        });
-
         btnDate.setOnClickListener(v -> showDatePicker());
         btnTime.setOnClickListener(v -> showTimePicker());
+        btnSelectRingtone.setOnClickListener(v -> showRingtonePicker());
         fabSave.setOnClickListener(v -> updateReminder());
+
+        // Quick presets
+        Chip chipIn1Hour = findViewById(R.id.chipIn1Hour);
+        Chip chipToday6PM = findViewById(R.id.chipToday6PM);
+        Chip chipTomorrowMorning = findViewById(R.id.chipTomorrowMorning);
+
+        chipIn1Hour.setOnClickListener(v -> {
+            selectedDateTime = Calendar.getInstance();
+            selectedDateTime.add(Calendar.HOUR_OF_DAY, 1);
+            updateDateTimeButtons();
+        });
+
+        chipToday6PM.setOnClickListener(v -> {
+            selectedDateTime = Calendar.getInstance();
+            selectedDateTime.set(Calendar.HOUR_OF_DAY, 18);
+            selectedDateTime.set(Calendar.MINUTE, 0);
+            updateDateTimeButtons();
+        });
+
+        chipTomorrowMorning.setOnClickListener(v -> {
+            selectedDateTime = Calendar.getInstance();
+            selectedDateTime.add(Calendar.DAY_OF_MONTH, 1);
+            selectedDateTime.set(Calendar.HOUR_OF_DAY, 9);
+            selectedDateTime.set(Calendar.MINUTE, 0);
+            updateDateTimeButtons();
+        });
+    }
+
+    private void showRingtonePicker() {
+        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Notification Sound");
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, selectedRingtoneUri);
+        startActivityForResult(intent, RINGTONE_PICKER_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RINGTONE_PICKER_REQUEST && resultCode == RESULT_OK && data != null) {
+            selectedRingtoneUri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+            if (selectedRingtoneUri != null) {
+                Ringtone ringtone = RingtoneManager.getRingtone(this, selectedRingtoneUri);
+                btnSelectRingtone.setText(ringtone.getTitle(this));
+            } else {
+                btnSelectRingtone.setText("Silent");
+            }
+        }
     }
 
     private void showDatePicker() {
@@ -185,7 +218,7 @@ public class EditReminderActivity extends AppCompatActivity {
     }
 
     private void updateDateTimeButtons() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM dd", Locale.getDefault());
         SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
         
         btnDate.setText(dateFormat.format(selectedDateTime.getTime()));
@@ -203,6 +236,7 @@ public class EditReminderActivity extends AppCompatActivity {
         reminder.setTitle(title);
         reminder.setDescription(etDescription.getText().toString().trim());
         
+        // Type
         int selectedTypeId = chipGroupType.getCheckedChipId();
         if (selectedTypeId == R.id.chipEvent) {
             reminder.setType(Reminder.TYPE_EVENT);
@@ -212,16 +246,11 @@ public class EditReminderActivity extends AppCompatActivity {
             reminder.setType(Reminder.TYPE_REMINDER);
         }
         
-        int selectedTriggerId = chipGroupTrigger.getCheckedChipId();
-        if (selectedTriggerId == R.id.chipTime) {
-            reminder.setTriggerType(Reminder.TRIGGER_TIME);
-            reminder.setScheduledAt(selectedDateTime.getTimeInMillis());
-        } else {
-            reminder.setTriggerType(Reminder.TRIGGER_LOCATION);
-            reminder.setLocation(etLocation.getText().toString().trim());
-            reminder.setRadiusMeters((int) sliderRadius.getValue());
-        }
+        // Time
+        reminder.setTriggerType(Reminder.TRIGGER_TIME);
+        reminder.setScheduledAt(selectedDateTime.getTimeInMillis());
         
+        // Repeat
         int selectedRepeatId = chipGroupRepeat.getCheckedChipId();
         if (selectedRepeatId == R.id.chipDaily) {
             reminder.setRepeatType("daily");
@@ -233,6 +262,7 @@ public class EditReminderActivity extends AppCompatActivity {
             reminder.setRepeatType("none");
         }
         
+        // Priority
         int selectedPriorityId = chipGroupPriority.getCheckedChipId();
         if (selectedPriorityId == R.id.chipMedium) {
             reminder.setPriority(Reminder.PRIORITY_MEDIUM);
@@ -243,14 +273,15 @@ public class EditReminderActivity extends AppCompatActivity {
         }
         
         reminder.setAllDay(cbAllDay.isChecked());
-        reminder.setUpdatedAt(System.currentTimeMillis());
 
+        // Update in database
         dbHelper.updateReminder(reminder);
         
+        // Reschedule alarm
         ReminderScheduler.cancelReminder(this, reminder.getId());
         ReminderScheduler.scheduleReminder(this, reminder);
         
-        Toast.makeText(this, "Reminder updated", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Reminder updated!", Toast.LENGTH_SHORT).show();
         finish();
     }
 }

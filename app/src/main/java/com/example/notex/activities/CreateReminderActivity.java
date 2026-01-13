@@ -2,6 +2,10 @@ package com.example.notex.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.CheckBox;
 import android.widget.Toast;
@@ -28,15 +32,18 @@ import java.util.UUID;
 
 public class CreateReminderActivity extends AppCompatActivity {
 
+    private static final int RINGTONE_PICKER_REQUEST = 999;
+
     private TextInputEditText etTitle, etDescription;
     private ChipGroup chipGroupType, chipGroupRepeat, chipGroupPriority, chipGroupPresets;
-    private MaterialButton btnDate, btnTime;
+    private MaterialButton btnDate, btnTime, btnSelectRingtone;
     private CheckBox cbAllDay;
     private ExtendedFloatingActionButton fabSave;
 
     private DatabaseHelper dbHelper;
     private Calendar selectedDateTime;
     private String userId;
+    private Uri selectedRingtoneUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +62,7 @@ public class CreateReminderActivity extends AppCompatActivity {
         dbHelper = DatabaseHelper.getInstance(this);
         selectedDateTime = Calendar.getInstance();
         selectedDateTime.add(Calendar.HOUR_OF_DAY, 1); // Default to 1 hour from now
+        selectedRingtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         // Setup toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -75,6 +83,7 @@ public class CreateReminderActivity extends AppCompatActivity {
         chipGroupPresets = findViewById(R.id.chipGroupPresets);
         btnDate = findViewById(R.id.btnSelectDate);
         btnTime = findViewById(R.id.btnSelectTime);
+        btnSelectRingtone = findViewById(R.id.btnSelectRingtone);
         cbAllDay = findViewById(R.id.checkAllDay);
         fabSave = findViewById(R.id.fabSave);
     }
@@ -82,6 +91,7 @@ public class CreateReminderActivity extends AppCompatActivity {
     private void setupListeners() {
         btnDate.setOnClickListener(v -> showDatePicker());
         btnTime.setOnClickListener(v -> showTimePicker());
+        btnSelectRingtone.setOnClickListener(v -> showRingtonePicker());
         fabSave.setOnClickListener(v -> saveReminder());
 
         // Quick presets
@@ -109,6 +119,28 @@ public class CreateReminderActivity extends AppCompatActivity {
             selectedDateTime.set(Calendar.MINUTE, 0);
             updateDateTimeButtons();
         });
+    }
+
+    private void showRingtonePicker() {
+        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Notification Sound");
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, selectedRingtoneUri);
+        startActivityForResult(intent, RINGTONE_PICKER_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RINGTONE_PICKER_REQUEST && resultCode == RESULT_OK && data != null) {
+            selectedRingtoneUri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+            if (selectedRingtoneUri != null) {
+                Ringtone ringtone = RingtoneManager.getRingtone(this, selectedRingtoneUri);
+                btnSelectRingtone.setText(ringtone.getTitle(this));
+            } else {
+                btnSelectRingtone.setText("Silent");
+            }
+        }
     }
 
     private void showDatePicker() {
