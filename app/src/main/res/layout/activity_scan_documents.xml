@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ECEFF1">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:fitsSystemWindows="true">
+
+        <!-- Toolbar -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/toolbarPrimary"
+            android:elevation="4dp"
+            app:title="My Documents"
+            app:titleTextColor="#FFFFFF"
+            app:navigationIcon="@android:drawable/ic_menu_revert" />
+        
+        <!-- Search Toolbar (hidden by default) -->
+        <LinearLayout
+            android:id="@+id/searchToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/toolbarPrimary"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:visibility="gone"
+            android:gravity="center_vertical">
+
+            <ImageButton
+                android:id="@+id/btnBackSearch"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="8dp"
+                android:src="@android:drawable/ic_menu_revert"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:tint="#FFFFFF"
+                android:contentDescription="Back" />
+
+            <EditText
+                android:id="@+id/etSearch"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="@android:color/white"
+                android:hint="Search documents..."
+                android:textColor="#000000"
+                android:textColorHint="#757575"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textSize="14sp"
+                android:inputType="text"
+                android:imeOptions="actionSearch"
+                android:maxLines="1" />
+
+            <ImageButton
+                android:id="@+id/btnCloseSearch"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:tint="#FFFFFF"
+                android:contentDescription="Close Search" />
+        </LinearLayout>
+
+        <!-- Selection Toolbar (hidden by default) -->
+        <LinearLayout
+            android:id="@+id/selectionToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@color/toolbarPrimary"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:visibility="gone"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvSelectionCount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0 selected"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginStart="16dp" />
+
+            <ImageButton
+                android:id="@+id/btnRename"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@android:drawable/ic_menu_edit"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:tint="#FFFFFF"
+                android:contentDescription="Rename" />
+
+            <ImageButton
+                android:id="@+id/btnShare"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@android:drawable/ic_menu_share"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:tint="#FFFFFF"
+                android:contentDescription="Share" />
+
+            <ImageButton
+                android:id="@+id/btnDelete"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@android:drawable/ic_menu_delete"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:tint="#FFFFFF"
+                android:contentDescription="Delete" />
+        </LinearLayout>
+
+        <!-- Empty State -->
+        <LinearLayout
+            android:id="@+id/emptyState"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="32dp">
+
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@android:drawable/ic_menu_gallery"
+                android:tint="#CCCCCC"
+                android:alpha="0.5" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No Documents Yet"
+                android:textSize="20sp"
+                android:textColor="#666666"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tap the camera button to scan your first document"
+                android:textSize="14sp"
+                android:textColor="#999999"
+                android:gravity="center"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+
+        <!-- Documents RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerDocuments"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:clipToPadding="false"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <!-- Camera FAB (bottom right) -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@android:drawable/ic_menu_camera"
+        app:tint="#FFFFFF"
+        android:contentDescription="Scan Document" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
