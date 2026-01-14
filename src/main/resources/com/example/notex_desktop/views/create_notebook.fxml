@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.notex_desktop.controllers.CreateNotebookController"
+            stylesheets="@../styles/styles.css" styleClass="create-notebook-page">
+
+    <!-- Top Header -->
+    <top>
+        <HBox styleClass="create-notebook-toolbar" alignment="CENTER_LEFT" spacing="20">
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
+            <Button text="←" onAction="#handleBack" styleClass="btn-toolbar-icon">
+                <font>
+                    <Font size="24"/>
+                </font>
+            </Button>
+            <Label text="Create Notebook" styleClass="create-notebook-toolbar-title">
+                <font>
+                    <Font name="System Bold" size="20"/>
+                </font>
+            </Label>
+        </HBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <VBox spacing="24" alignment="TOP_CENTER">
+            <padding>
+                <Insets top="32" right="24" bottom="32" left="24"/>
+            </padding>
+
+            <!-- Notebook Title -->
+            <VBox spacing="8">
+                <Label text="Notebook Title" styleClass="create-notebook-label">
+                    <font>
+                        <Font name="System Bold" size="16"/>
+                    </font>
+                </Label>
+                <TextField fx:id="titleField" promptText="Enter notebook title" styleClass="create-notebook-input">
+                    <font>
+                        <Font size="16"/>
+                    </font>
+                </TextField>
+            </VBox>
+
+            <!-- Notebook Color -->
+            <VBox spacing="12">
+                <Label text="Notebook Color" styleClass="create-notebook-label">
+                    <font>
+                        <Font name="System Bold" size="16"/>
+                    </font>
+                </Label>
+                
+                <!-- Color Grid -->
+                <GridPane fx:id="colorGrid" hgap="16" vgap="16" alignment="CENTER">
+                    <padding>
+                        <Insets top="8" right="0" bottom="8" left="0"/>
+                    </padding>
+                </GridPane>
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- Create Button -->
+            <Button text="Create Notebook" onAction="#handleCreate" styleClass="btn-create-notebook" prefHeight="56" maxWidth="Infinity">
+                <font>
+                    <Font name="System Bold" size="16"/>
+                </font>
+            </Button>
+        </VBox>
+    </center>
+</BorderPane>

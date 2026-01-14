@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.notex_desktop.controllers.RegisterController"
+            stylesheets="@../styles/styles.css" styleClass="register-page">
+
+    <top>
+        <!-- Close Button -->
+        <HBox>
+            <padding>
+                <Insets top="20" right="20" bottom="0" left="20"/>
+            </padding>
+            <Button text="✕" onAction="#handleBackToLogin" styleClass="btn-close">
+                <font>
+                    <Font size="24"/>
+                </font>
+            </Button>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="register-scroll">
+            <VBox alignment="TOP_CENTER" spacing="20">
+                <padding>
+                    <Insets top="20" right="40" bottom="60" left="40"/>
+                </padding>
+
+                <!-- Title -->
+                <Label text="Create Account" styleClass="register-title">
+                    <font>
+                        <Font name="System Bold" size="32"/>
+                    </font>
+                </Label>
+
+                <!-- Subtitle -->
+                <Label text="Join NoteX++ today" styleClass="register-subtitle">
+                    <font>
+                        <Font size="14"/>
+                    </font>
+                </Label>
+
+                <!-- Register Card -->
+                <VBox spacing="16" maxWidth="500" styleClass="register-card">
+                    <padding>
+                        <Insets top="24" right="24" bottom="24" left="24"/>
+                    </padding>
+
+                    <!-- Username Field -->
+                    <VBox spacing="4">
+                        <Label text="Username or Email" styleClass="field-label"/>
+                        <TextField fx:id="usernameField" promptText="" styleClass="register-input"/>
+                    </VBox>
+
+                    <!-- Email Field -->
+                    <VBox spacing="4">
+                        <Label text="Email" styleClass="field-label"/>
+                        <TextField fx:id="emailField" promptText="" styleClass="register-input"/>
+                    </VBox>
+
+                    <!-- Password Field -->
+                    <VBox spacing="4">
+                        <Label text="Password" styleClass="field-label"/>
+                        <HBox styleClass="password-container">
+                            <StackPane HBox.hgrow="ALWAYS">
+                                <PasswordField fx:id="passwordField" promptText="" 
+                                             styleClass="register-input-password"/>
+                                <TextField fx:id="passwordTextField" promptText="" 
+                                         styleClass="register-input-password" visible="false"/>
+                            </StackPane>
+                            <Label text="👁" styleClass="eye-icon" onMouseClicked="#togglePasswordVisibility">
+                                <font>
+                                    <Font size="18"/>
+                                </font>
+                            </Label>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Confirm Password Field -->
+                    <VBox spacing="4">
+                        <Label text="Confirm Password" styleClass="field-label"/>
+                        <HBox styleClass="password-container">
+                            <StackPane HBox.hgrow="ALWAYS">
+                                <PasswordField fx:id="confirmPasswordField" promptText="" 
+                                             styleClass="register-input-password"/>
+                                <TextField fx:id="confirmPasswordTextField" promptText="" 
+                                         styleClass="register-input-password" visible="false"/>
+                            </StackPane>
+                            <Label text="👁" styleClass="eye-icon" onMouseClicked="#toggleConfirmPasswordVisibility">
+                                <font>
+                                    <Font size="18"/>
+                                </font>
+                            </Label>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Error Label -->
+                    <Label fx:id="errorLabel" styleClass="error-label" visible="false" managed="false"/>
+
+                    <!-- Role Selection -->
+                    <VBox spacing="8">
+                        <padding>
+                            <Insets top="8" right="0" bottom="0" left="0"/>
+                        </padding>
+                        <Label text="Select Role" styleClass="select-role-label">
+                            <font>
+                                <Font name="System Bold" size="16"/>
+                            </font>
+                        </Label>
+                        <HBox spacing="0" styleClass="role-toggle-group">
+                            <ToggleButton fx:id="userRoleButton" text="User" 
+                                        styleClass="role-toggle-left" 
+                                        selected="true" HBox.hgrow="ALWAYS">
+                                <font>
+                                    <Font size="15"/>
+                                </font>
+                            </ToggleButton>
+                            <ToggleButton fx:id="adminRoleButton" text="Admin" 
+                                        styleClass="role-toggle-right" HBox.hgrow="ALWAYS">
+                                <font>
+                                    <Font size="15"/>
+                                </font>
+                            </ToggleButton>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Register Button -->
+                    <Button fx:id="registerButton" text="Register" onAction="#handleRegister" 
+                            styleClass="btn-register" prefHeight="56">
+                        <font>
+                            <Font name="System Bold" size="16"/>
+                        </font>
+                    </Button>
+                </VBox>
+
+                <!-- Login Link -->
+                <HBox alignment="CENTER" spacing="5">
+                    <padding>
+                        <Insets top="10" right="0" bottom="0" left="0"/>
+                    </padding>
+                    <Label text="Already have an account?" styleClass="login-text">
+                        <font>
+                            <Font size="14"/>
+                        </font>
+                    </Label>
+                    <Hyperlink fx:id="loginLink" text="Login" onAction="#handleLogin" styleClass="login-link-purple">
+                        <font>
+                            <Font name="System Bold" size="14"/>
+                        </font>
+                    </Hyperlink>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.notex_desktop.controllers.UserHomeController"
+            stylesheets="@../styles/styles.css" styleClass="user-home-page">
+
+    <!-- Top Header -->
+    <top>
+        <VBox>
+            <!-- Purple Toolbar -->
+            <HBox styleClass="user-home-toolbar" alignment="CENTER_LEFT" spacing="20">
+                <padding>
+                    <Insets top="15" right="20" bottom="15" left="20"/>
+                </padding>
+                <Label text="NoteX++" styleClass="user-home-toolbar-title">
+                    <font>
+                        <Font name="System Bold" size="20"/>
+                    </font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="🔔" styleClass="btn-toolbar-icon">
+                    <font>
+                        <Font size="20"/>
+                    </font>
+                </Button>
+                <Button text="🔄" styleClass="btn-toolbar-icon">
+                    <font>
+                        <Font size="20"/>
+                    </font>
+                </Button>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="user-home-scroll">
+            <VBox spacing="16">
+                <padding>
+                    <Insets top="16" right="16" bottom="16" left="16"/>
+                </padding>
+
+                <!-- Welcome Back Card -->
+                <VBox styleClass="user-welcome-card" spacing="8">
+                    <padding>
+                        <Insets top="20" right="20" bottom="20" left="20"/>
+                    </padding>
+                    <Label text="Welcome back!" styleClass="user-welcome-title">
+                        <font>
+                            <Font name="System Bold" size="24"/>
+                        </font>
+                    </Label>
+                    <Label fx:id="welcomeLabel" text="User" styleClass="user-welcome-username">
+                        <font>
+                            <Font size="16"/>
+                        </font>
+                    </Label>
+                </VBox>
+
+                <!-- Quick Stats Card -->
+                <VBox styleClass="user-stats-card" spacing="12">
+                    <padding>
+                        <Insets top="20" right="20" bottom="20" left="20"/>
+                    </padding>
+                    <Label text="Quick Stats" styleClass="user-stats-title">
+                        <font>
+                            <Font name="System Bold" size="18"/>
+                        </font>
+                    </Label>
+                    <HBox spacing="0" alignment="CENTER">
+                        <!-- Notebooks -->
+                        <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label fx:id="notebookCountLabel" text="0" styleClass="user-stat-number">
+                                <font>
+                                    <Font name="System Bold" size="36"/>
+                                </font>
+                            </Label>
+                            <Label text="Notebooks" styleClass="user-stat-label">
+                                <font>
+                                    <Font size="14"/>
+                                </font>
+                            </Label>
+                        </VBox>
+                        <!-- Documents -->
+                        <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label fx:id="pageCountLabel" text="0" styleClass="user-stat-number">
+                                <font>
+                                    <Font name="System Bold" size="36"/>
+                                </font>
+                            </Label>
+                            <Label text="Documents" styleClass="user-stat-label">
+                                <font>
+                                    <Font size="14"/>
+                                </font>
+                            </Label>
+                        </VBox>
+                        <!-- Reminders -->
+                        <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <Label fx:id="reminderCountLabel" text="0" styleClass="user-stat-number">
+                                <font>
+                                    <Font name="System Bold" size="36"/>
+                                </font>
+                            </Label>
+                            <Label text="Reminders" styleClass="user-stat-label">
+                                <font>
+                                    <Font size="14"/>
+                                </font>
+                            </Label>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <!-- Quick Actions -->
+                <Label text="Quick Actions" styleClass="user-section-title">
+                    <font>
+                        <Font name="System Bold" size="18"/>
+                    </font>
+                </Label>
+
+                <!-- My Notebooks -->
+                <HBox styleClass="user-action-card" spacing="12" alignment="CENTER_LEFT" onMouseClicked="#handleNewNotebook">
+                    <padding>
+                        <Insets top="16" right="16" bottom="16" left="16"/>
+                    </padding>
+                    <Label text="📓" styleClass="user-action-icon">
+                        <font>
+                            <Font size="32"/>
+                        </font>
+                    </Label>
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="My Notebooks" styleClass="user-action-title">
+                            <font>
+                                <Font name="System Bold" size="16"/>
+                            </font>
+                        </Label>
+                        <Label text="View and manage your notebooks" styleClass="user-action-subtitle">
+                            <font>
+                                <Font size="12"/>
+                            </font>
+                        </Label>
+                    </VBox>
+                    <Label text="→" styleClass="user-action-arrow">
+                        <font>
+                            <Font size="20"/>
+                        </font>
+                    </Label>
+                </HBox>
+
+                <!-- Search Notes -->
+                <HBox styleClass="user-action-card" spacing="12" alignment="CENTER_LEFT">
+                    <padding>
+                        <Insets top="16" right="16" bottom="16" left="16"/>
+                    </padding>
+                    <Label text="🔍" styleClass="user-action-icon">
+                        <font>
+                            <Font size="32"/>
+                        </font>
+                    </Label>
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="Search Notes" styleClass="user-action-title">
+                            <font>
+                                <Font name="System Bold" size="16"/>
+                            </font>
+                        </Label>
+                        <Label text="Find notes by keywords or tags" styleClass="user-action-subtitle">
+                            <font>
+                                <Font size="12"/>
+                            </font>
+                        </Label>
+                    </VBox>
+                    <Label text="→" styleClass="user-action-arrow">
+                        <font>
+                            <Font size="20"/>
+                        </font>
+                    </Label>
+                </HBox>
+
+                <!-- Reminders & Events -->
+                <HBox styleClass="user-action-card" spacing="12" alignment="CENTER_LEFT" onMouseClicked="#handleReminders">
+                    <padding>
+                        <Insets top="16" right="16" bottom="16" left="16"/>
+                    </padding>
+                    <Label text="📅" styleClass="user-action-icon">
+                        <font>
+                            <Font size="32"/>
+                        </font>
+                    </Label>
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="Reminders &amp; Events" styleClass="user-action-title">
+                            <font>
+                                <Font name="System Bold" size="16"/>
+                            </font>
+                        </Label>
+                        <Label text="Create time &amp; location based reminders" styleClass="user-action-subtitle">
+                            <font>
+                                <Font size="12"/>
+                            </font>
+                        </Label>
+                    </VBox>
+                    <Label text="→" styleClass="user-action-arrow">
+                        <font>
+                            <Font size="20"/>
+                        </font>
+                    </Label>
+                </HBox>
+
+                <!-- Scan Documents -->
+                <HBox styleClass="user-action-card" spacing="12" alignment="CENTER_LEFT" onMouseClicked="#handleScanDocuments">
+                    <padding>
+                        <Insets top="16" right="16" bottom="16" left="16"/>
+                    </padding>
+                    <Label text="📷" styleClass="user-action-icon">
+                        <font>
+                            <Font size="32"/>
+                        </font>
+                    </Label>
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="Scan Documents" styleClass="user-action-title">
+                            <font>
+                                <Font name="System Bold" size="16"/>
+                            </font>
+                        </Label>
+                        <Label text="Capture and scan documents to PDF" styleClass="user-action-subtitle">
+                            <font>
+                                <Font size="12"/>
+                            </font>
+                        </Label>
+                    </VBox>
+                    <Label text="→" styleClass="user-action-arrow">
+                        <font>
+                            <Font size="20"/>
+                        </font>
+                    </Label>
+                </HBox>
+
+                <!-- Settings -->
+                <HBox styleClass="user-action-card" spacing="12" alignment="CENTER_LEFT">
+                    <padding>
+                        <Insets top="16" right="16" bottom="16" left="16"/>
+                    </padding>
+                    <Label text="⚙️" styleClass="user-action-icon">
+                        <font>
+                            <Font size="32"/>
+                        </font>
+                    </Label>
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="Settings" styleClass="user-action-title">
+                            <font>
+                                <Font name="System Bold" size="16"/>
+                            </font>
+                        </Label>
+                        <Label text="App preferences and sync options" styleClass="user-action-subtitle">
+                            <font>
+                                <Font size="12"/>
+                            </font>
+                        </Label>
+                    </VBox>
+                    <Label text="→" styleClass="user-action-arrow">
+                        <font>
+                            <Font size="20"/>
+                        </font>
+                    </Label>
+                </HBox>
+
+                <!-- Logout Button -->
+                <Button text="Logout" onAction="#handleLogout" styleClass="btn-logout-user" prefHeight="56" maxWidth="Infinity">
+                    <padding>
+                        <Insets top="12" right="0" bottom="12" left="0"/>
+                    </padding>
+                    <font>
+                        <Font name="System Bold" size="16"/>
+                    </font>
+                </Button>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

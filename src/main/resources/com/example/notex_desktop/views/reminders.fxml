@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.notex_desktop.controllers.RemindersController"
+            stylesheets="@../styles/styles.css" styleClass="reminders-page">
+
+    <!-- Top Header -->
+    <top>
+        <VBox>
+            <!-- Purple Toolbar -->
+            <HBox styleClass="user-home-toolbar" alignment="CENTER_LEFT" spacing="15">
+                <padding>
+                    <Insets top="12" right="20" bottom="12" left="20"/>
+                </padding>
+                <Button text="✕" onAction="#handleBack" styleClass="btn-toolbar-icon">
+                    <font>
+                        <Font size="18"/>
+                    </font>
+                </Button>
+                <Label text="Reminders &amp; Events" styleClass="user-home-toolbar-title">
+                    <font>
+                        <Font name="System Bold" size="18"/>
+                    </font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS"/>
+            </HBox>
+
+            <!-- Tab Bar -->
+            <HBox fx:id="tabBar" alignment="CENTER" spacing="0" styleClass="tab-bar" style="-fx-background-color: #5C6BC0;">
+                <Button fx:id="tabAll" text="All" onAction="#handleTabAll" styleClass="tab-button-active" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                <Button fx:id="tabReminders" text="Reminders" onAction="#handleTabReminders" styleClass="tab-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                <Button fx:id="tabEvents" text="Events" onAction="#handleTabEvents" styleClass="tab-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                <Button fx:id="tabTasks" text="Tasks" onAction="#handleTabTasks" styleClass="tab-button" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="user-home-scroll">
+            <VBox fx:id="contentContainer" spacing="12">
+                <padding>
+                    <Insets top="16" right="16" bottom="80" left="16"/>
+                </padding>
+
+                <!-- Calendar Strip (only in All tab) -->
+                <VBox fx:id="calendarSection" spacing="8">
+                    <Label fx:id="todayLabel" text="Today, 14 Jan 2026" styleClass="calendar-today-label" style="-fx-text-fill: black;">
+                        <font>
+                            <Font name="System Bold" size="16"/>
+                        </font>
+                    </Label>
+                    <HBox fx:id="calendarStrip" alignment="CENTER" spacing="8">
+                        <!-- Calendar days will be added dynamically -->
+                    </HBox>
+                </VBox>
+
+                <!-- Reminders List -->
+                <VBox fx:id="remindersList" spacing="12">
+                    <!-- Reminder cards will be added dynamically -->
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <!-- FAB Button -->
+    <bottom>
+        <StackPane>
+            <HBox alignment="BOTTOM_RIGHT">
+                <padding>
+                    <Insets top="0" right="20" bottom="20" left="0"/>
+                </padding>
+                <Button fx:id="fabAdd" text="+" onAction="#handleAddReminder" styleClass="fab-button">
+                    <font>
+                        <Font size="28"/>
+                    </font>
+                </Button>
+            </HBox>
+        </StackPane>
+    </bottom>
+
+</BorderPane>

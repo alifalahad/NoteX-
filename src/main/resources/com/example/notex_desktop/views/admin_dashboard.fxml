@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.notex_desktop.controllers.AdminDashboardController"
+            stylesheets="@../styles/styles.css" styleClass="admin-dashboard-page">
+
+    <!-- Top Header -->
+    <top>
+        <VBox>
+            <!-- Blue Toolbar -->
+            <HBox styleClass="admin-toolbar" alignment="CENTER_LEFT" spacing="20">
+                <padding>
+                    <Insets top="15" right="20" bottom="15" left="20"/>
+                </padding>
+                <Label text="Admin Dashboard" styleClass="admin-toolbar-title">
+                    <font>
+                        <Font name="System Bold" size="20"/>
+                    </font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="🔄" onAction="#handleRefresh" styleClass="btn-toolbar-icon">
+                    <font>
+                        <Font size="20"/>
+                    </font>
+                </Button>
+                <Button text="🔔" styleClass="btn-toolbar-icon">
+                    <font>
+                        <Font size="20"/>
+                    </font>
+                </Button>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="admin-scroll">
+            <VBox spacing="16">
+                <padding>
+                    <Insets top="16" right="16" bottom="16" left="16"/>
+                </padding>
+
+                <!-- Admin Welcome Card -->
+                <VBox styleClass="admin-welcome-card" spacing="6">
+                    <padding>
+                        <Insets top="20" right="20" bottom="20" left="20"/>
+                    </padding>
+                    <Label text="Admin Panel" styleClass="admin-panel-title">
+                        <font>
+                            <Font name="System Bold" size="20"/>
+                        </font>
+                    </Label>
+                    <Label fx:id="welcomeLabel" text="Welcome, ad" styleClass="admin-welcome-text">
+                        <font>
+                            <Font size="16"/>
+                        </font>
+                    </Label>
+                    <Label fx:id="lastLoginLabel" text="Last login: Jan 13, 2026 at 07:33 pm" styleClass="admin-last-login">
+                        <font>
+                            <Font size="12"/>
+                        </font>
+                    </Label>
+                </VBox>
+
+                <!-- System Overview -->
+                <Label text="System Overview" styleClass="admin-section-title">
+                    <font>
+                        <Font name="System Bold" size="18"/>
+                    </font>
+                </Label>
+
+                <!-- Stats Grid -->
+                <HBox spacing="16">
+                    <!-- Total Users Card -->
+                    <VBox styleClass="admin-stat-card" alignment="CENTER" spacing="8" HBox.hgrow="ALWAYS">
+                        <padding>
+                            <Insets top="20" right="20" bottom="20" left="20"/>
+                        </padding>
+                        <Label text="👥" styleClass="admin-stat-icon-green">
+                            <font>
+                                <Font size="32"/>
+                            </font>
+                        </Label>
+                        <Label fx:id="totalUsersLabel" text="5" styleClass="admin-stat-number">
+                            <font>
+                                <Font name="System Bold" size="28"/>
+                            </font>
+                        </Label>
+                        <Label text="Total Users" styleClass="admin-stat-label">
+                            <font>
+                                <Font size="12"/>
+                            </font>
+                        </Label>
+                    </VBox>
+
+                    <!-- Total Notes Card -->
+                    <VBox styleClass="admin-stat-card" alignment="CENTER" spacing="8" HBox.hgrow="ALWAYS">
+                        <padding>
+                            <Insets top="20" right="20" bottom="20" left="20"/>
+                        </padding>
+                        <Label text="✏️" styleClass="admin-stat-icon-orange">
+                            <font>
+                                <Font size="32"/>
+                            </font>
+                        </Label>
+                        <Label fx:id="totalNotesLabel" text="0" styleClass="admin-stat-number">
+                            <font>
+                                <Font name="System Bold" size="28"/>
+                            </font>
+                        </Label>
+                        <Label text="Total Notes" styleClass="admin-stat-label">
+                            <font>
+                                <Font size="12"/>
+                            </font>
+                        </Label>
+                    </VBox>
+                </HBox>
+
+                <!-- Administration -->
+                <Label text="Administration" styleClass="admin-section-title">
+                    <padding>
+                        <Insets top="8" right="0" bottom="0" left="0"/>
+                    </padding>
+                    <font>
+                        <Font name="System Bold" size="18"/>
+                    </font>
+                </Label>
+
+                <!-- Manage Users -->
+                <HBox styleClass="admin-action-card" spacing="12" alignment="CENTER_LEFT" onMouseClicked="#handleManageUsers">
+                    <padding>
+                        <Insets top="16" right="16" bottom="16" left="16"/>
+                    </padding>
+                    <Label text="👥" styleClass="admin-action-icon">
+                        <font>
+                            <Font size="24"/>
+                        </font>
+                    </Label>
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="Manage Users" styleClass="admin-action-title">
+                            <font>
+                                <Font name="System Bold" size="16"/>
+                            </font>
+                        </Label>
+                        <Label text="View, add, edit, or delete users" styleClass="admin-action-subtitle">
+                            <font>
+                                <Font size="12"/>
+                            </font>
+                        </Label>
+                    </VBox>
+                    <Label text="→" styleClass="admin-action-arrow">
+                        <font>
+                            <Font size="20"/>
+                        </font>
+                    </Label>
+                </HBox>
+
+                <!-- System Settings -->
+                <HBox styleClass="admin-action-card" spacing="12" alignment="CENTER_LEFT">
+                    <padding>
+                        <Insets top="16" right="16" bottom="16" left="16"/>
+                    </padding>
+                    <Label text="🔧" styleClass="admin-action-icon">
+                        <font>
+                            <Font size="24"/>
+                        </font>
+                    </Label>
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="System Settings" styleClass="admin-action-title">
+                            <font>
+                                <Font name="System Bold" size="16"/>
+                            </font>
+                        </Label>
+                        <Label text="Configure application settings" styleClass="admin-action-subtitle">
+                            <font>
+                                <Font size="12"/>
+                            </font>
+                        </Label>
+                    </VBox>
+                    <Label text="→" styleClass="admin-action-arrow">
+                        <font>
+                            <Font size="20"/>
+                        </font>
+                    </Label>
+                </HBox>
+
+                <!-- Backup & Restore -->
+                <HBox styleClass="admin-action-card" spacing="12" alignment="CENTER_LEFT">
+                    <padding>
+                        <Insets top="16" right="16" bottom="16" left="16"/>
+                    </padding>
+                    <Label text="💾" styleClass="admin-action-icon">
+                        <font>
+                            <Font size="24"/>
+                        </font>
+                    </Label>
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="Backup &amp; Restore" styleClass="admin-action-title">
+                            <font>
+                                <Font name="System Bold" size="16"/>
+                            </font>
+                        </Label>
+                        <Label text="Manage database backups" styleClass="admin-action-subtitle">
+                            <font>
+                                <Font size="12"/>
+                            </font>
+                        </Label>
+                    </VBox>
+                    <Label text="→" styleClass="admin-action-arrow">
+                        <font>
+                            <Font size="20"/>
+                        </font>
+                    </Label>
+                </HBox>
+
+                <!-- View Reports -->
+                <HBox styleClass="admin-action-card" spacing="12" alignment="CENTER_LEFT">
+                    <padding>
+                        <Insets top="16" right="16" bottom="16" left="16"/>
+                    </padding>
+                    <Label text="📊" styleClass="admin-action-icon">
+                        <font>
+                            <Font size="24"/>
+                        </font>
+                    </Label>
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="View Reports" styleClass="admin-action-title">
+                            <font>
+                                <Font name="System Bold" size="16"/>
+                            </font>
+                        </Label>
+                        <Label text="Analytics and usage reports" styleClass="admin-action-subtitle">
+                            <font>
+                                <Font size="12"/>
+                            </font>
+                        </Label>
+                    </VBox>
+                    <Label text="→" styleClass="admin-action-arrow">
+                        <font>
+                            <Font size="20"/>
+                        </font>
+                    </Label>
+                </HBox>
+
+                <!-- Logout Button -->
+                <Button text="Logout" onAction="#handleLogout" styleClass="btn-logout-admin-bold" prefHeight="56">
+                    <padding>
+                        <Insets top="12" right="0" bottom="0" left="0"/>
+                    </padding>
+                    <font>
+                        <Font name="System Bold" size="16"/>
+                    </font>
+                </Button>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

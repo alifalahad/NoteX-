@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.canvas.Canvas?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.notex_desktop.controllers.PageEditorController"
+            stylesheets="@../styles/styles.css" styleClass="page-editor">
+
+    <!-- Top Toolbar -->
+    <top>
+        <VBox>
+            <!-- Header -->
+            <HBox styleClass="page-editor-header" alignment="CENTER_LEFT" spacing="20">
+                <padding>
+                    <Insets top="12" right="16" bottom="12" left="16"/>
+                </padding>
+                <Button text="←" onAction="#handleBack" styleClass="btn-toolbar-icon">
+                    <font>
+                        <Font size="24"/>
+                    </font>
+                </Button>
+                <Label fx:id="pageTitleLabel" text="my note" styleClass="page-editor-title">
+                    <font>
+                        <Font name="System Bold" size="18"/>
+                    </font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="pageCountLabel" text="1 / 1 pages" styleClass="page-editor-subtitle">
+                    <font>
+                        <Font size="14"/>
+                    </font>
+                </Label>
+            </HBox>
+
+            <!-- Tools Toolbar -->
+            <ScrollPane fitToHeight="true" styleClass="tools-scroll" hbarPolicy="NEVER" vbarPolicy="NEVER">
+                <HBox styleClass="tools-toolbar" spacing="8">
+                    <padding>
+                        <Insets top="8" right="12" bottom="8" left="12"/>
+                    </padding>
+                    
+                    <ToggleButton fx:id="btnPaint" text="🖌" onAction="#handlePaint" styleClass="tool-btn"/>
+                    <ToggleButton fx:id="btnErase" text="⌫" onAction="#handleErase" styleClass="tool-btn"/>
+                    <ToggleButton fx:id="btnText" text="Aa" onAction="#handleText" styleClass="tool-btn"/>
+                    <ToggleButton fx:id="btnShape" text="◻" onAction="#handleShape" styleClass="tool-btn"/>
+                    <ToggleButton fx:id="btnImage" text="🖼" onAction="#handleImage" styleClass="tool-btn"/>
+                    <ToggleButton fx:id="btnStickyNote" text="📝" onAction="#handleStickyNote" styleClass="tool-btn"/>
+                    <ToggleButton fx:id="btnLaser" text="●" onAction="#handleLaser" styleClass="tool-btn"/>
+                    <ToggleButton fx:id="btnVoice" text="🎤" onAction="#handleVoice" styleClass="tool-btn"/>
+                    
+                    <Separator orientation="VERTICAL"/>
+                    
+                    <Button fx:id="btnUndo" text="↶" onAction="#handleUndo" styleClass="tool-btn-action"/>
+                    <Button fx:id="btnRedo" text="↷" onAction="#handleRedo" styleClass="tool-btn-action"/>
+                    <Button fx:id="btnSave" text="💾" onAction="#handleSave" styleClass="tool-btn-save"/>
+                </HBox>
+            </ScrollPane>
+        </VBox>
+    </top>
+
+    <!-- Canvas Area - Vertical Scrolling Pages -->
+    <center>
+        <ScrollPane fx:id="pagesScrollPane" fitToWidth="true" styleClass="canvas-container" hbarPolicy="NEVER" vbarPolicy="ALWAYS">
+            <VBox fx:id="pagesContainer" spacing="20" styleClass="pages-container" alignment="TOP_CENTER">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <!-- Bottom Bar -->
+    <bottom>
+        <HBox styleClass="bottom-bar" spacing="16" alignment="CENTER">
+            <padding>
+                <Insets top="12" right="16" bottom="12" left="16"/>
+            </padding>
+            
+            <Button text="+ Add Page" onAction="#handleAddPage" styleClass="btn-add-page"/>
+        </HBox>
+    </bottom>
+</BorderPane>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.notex_desktop.controllers.ManageUsersController"
+            stylesheets="@../styles/styles.css" styleClass="manage-users-page">
+
+    <!-- Top Header -->
+    <top>
+        <HBox styleClass="manage-users-toolbar" alignment="CENTER_LEFT" spacing="20">
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
+            <Button text="✕" onAction="#handleBack" styleClass="btn-toolbar-close">
+                <font>
+                    <Font size="24"/>
+                </font>
+            </Button>
+            <Label text="Manage Users" styleClass="manage-users-toolbar-title">
+                <font>
+                    <Font name="System Bold" size="20"/>
+                </font>
+            </Label>
+        </HBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <VBox spacing="16">
+            <padding>
+                <Insets top="16" right="16" bottom="16" left="16"/>
+            </padding>
+
+            <!-- Stats Card -->
+            <HBox styleClass="manage-users-stats-card" spacing="0">
+                <padding>
+                    <Insets top="16" right="16" bottom="16" left="16"/>
+                </padding>
+
+                <!-- Total Users -->
+                <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                    <Label fx:id="totalUsersLabel" text="5" styleClass="manage-users-stat-number">
+                        <font>
+                            <Font name="System Bold" size="32"/>
+                        </font>
+                    </Label>
+                    <Label text="Total Users" styleClass="manage-users-stat-label">
+                        <font>
+                            <Font size="14"/>
+                        </font>
+                    </Label>
+                </VBox>
+
+                <!-- Admins -->
+                <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                    <Label fx:id="adminCountLabel" text="2" styleClass="manage-users-stat-number-admin">
+                        <font>
+                            <Font name="System Bold" size="32"/>
+                        </font>
+                    </Label>
+                    <Label text="Admins" styleClass="manage-users-stat-label">
+                        <font>
+                            <Font size="14"/>
+                        </font>
+                    </Label>
+                </VBox>
+            </HBox>
+
+            <!-- User List -->
+            <ScrollPane fitToWidth="true" styleClass="manage-users-scroll" VBox.vgrow="ALWAYS">
+                <VBox fx:id="userListContainer" spacing="12">
+                    <padding>
+                        <Insets top="4" right="0" bottom="4" left="0"/>
+                    </padding>
+                </VBox>
+            </ScrollPane>
+        </VBox>
+    </center>
+</BorderPane>

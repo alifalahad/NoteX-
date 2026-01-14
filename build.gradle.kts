@@ -1,0 +1,47 @@
+plugins {
+    java
+    application
+    id("org.openjfx.javafxplugin") version "0.1.0"
+}
+
+group = "com.example"
+version = "1.0-SNAPSHOT"
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+}
+
+application {
+    mainClass.set("com.example.notex_desktop.Launcher")
+}
+
+javafx {
+    version = "21.0.2"
+    modules("javafx.controls", "javafx.fxml", "javafx.graphics", "javafx.swing")
+}
+
+dependencies {
+    implementation("org.xerial:sqlite-jdbc:3.45.1.0")
+    implementation("org.controlsfx:controlsfx:11.2.1")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = "com.example.notex_desktop.Launcher"
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+}

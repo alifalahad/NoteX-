@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.notex_desktop.controllers.NotebookPagesController"
+            stylesheets="@../styles/styles.css" styleClass="main-container">
+
+    <!-- Top Header -->
+    <top>
+        <VBox>
+            <HBox styleClass="header" alignment="CENTER_LEFT" spacing="20">
+                <padding>
+                    <Insets top="15" right="20" bottom="15" left="20"/>
+                </padding>
+                <Button text="← Back" onAction="#handleBack" styleClass="btn-secondary"/>
+                <VBox HBox.hgrow="ALWAYS">
+                    <Label fx:id="notebookTitle" text="Notebook" styleClass="header-title">
+                        <font>
+                            <Font name="System Bold" size="24"/>
+                        </font>
+                    </Label>
+                    <Label fx:id="pageCountLabel" text="0 pages" styleClass="header-subtitle"/>
+                </VBox>
+                <Button text="+ New Page" onAction="#handleNewPage" styleClass="btn-primary"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <VBox spacing="15">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <!-- Pages List -->
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="pages-scroll">
+                <VBox fx:id="pagesContainer" spacing="10">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                </VBox>
+            </ScrollPane>
+
+            <!-- Empty State -->
+            <VBox fx:id="emptyState" alignment="CENTER" spacing="10" visible="false" managed="false">
+                <Label text="📄" styleClass="empty-icon">
+                    <font>
+                        <Font size="48"/>
+                    </font>
+                </Label>
+                <Label text="No pages yet" styleClass="empty-title">
+                    <font>
+                        <Font name="System Bold" size="18"/>
+                    </font>
+                </Label>
+                <Label text="Create your first page to start writing"/>
+                <Button text="Create Page" onAction="#handleNewPage" styleClass="btn-primary"/>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.notex_desktop.controllers.MyNotebooksController"
+            stylesheets="@../styles/styles.css" styleClass="notebooks-page">
+
+    <!-- Top Header -->
+    <top>
+        <HBox styleClass="notebooks-toolbar" alignment="CENTER_LEFT" spacing="20">
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
+            <Button text="←" onAction="#handleBack" styleClass="btn-toolbar-icon">
+                <font>
+                    <Font size="24"/>
+                </font>
+            </Button>
+            <Label text="My Notebooks" styleClass="notebooks-toolbar-title">
+                <font>
+                    <Font name="System Bold" size="20"/>
+                </font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="⋮" styleClass="btn-toolbar-icon">
+                <font>
+                    <Font size="24"/>
+                </font>
+            </Button>
+        </HBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <StackPane>
+            <!-- Notebooks ScrollView -->
+            <ScrollPane fitToWidth="true" styleClass="notebooks-scroll">
+                <VBox fx:id="notebooksContainer" spacing="12">
+                    <padding>
+                        <Insets top="16" right="16" bottom="80" left="16"/>
+                    </padding>
+                </VBox>
+            </ScrollPane>
+
+            <!-- Floating Add Button (Bottom Right) -->
+            <HBox alignment="BOTTOM_RIGHT" StackPane.alignment="BOTTOM_RIGHT" pickOnBounds="false">
+                <padding>
+                    <Insets top="0" right="24" bottom="24" left="0"/>
+                </padding>
+                <Button text="+" onAction="#handleCreateNotebook" styleClass="btn-fab">
+                    <font>
+                        <Font name="System Bold" size="32"/>
+                    </font>
+                </Button>
+            </HBox>
+        </StackPane>
+    </center>
+</BorderPane>

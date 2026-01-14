@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.shape.Circle?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.example.notex_desktop.controllers.SplashController"
+           stylesheets="@../styles/styles.css" styleClass="splash-screen">
+    
+    <VBox alignment="CENTER" spacing="20">
+        <padding>
+            <Insets top="50" right="50" bottom="50" left="50"/>
+        </padding>
+
+        <!-- Logo Circle -->
+        <StackPane>
+            <Circle radius="100" styleClass="logo-circle"/>
+            <VBox alignment="CENTER">
+                <Label text="N" styleClass="logo-n">
+                    <font>
+                        <Font name="System Bold" size="72"/>
+                    </font>
+                </Label>
+                <Label text="++" styleClass="logo-plus">
+                    <font>
+                        <Font name="System Bold" size="36"/>
+                    </font>
+                </Label>
+            </VBox>
+        </StackPane>
+
+        <!-- App Name -->
+        <Label text="NoteX++" styleClass="splash-title">
+            <font>
+                <Font name="System Bold" size="48"/>
+            </font>
+        </Label>
+
+        <!-- Tagline -->
+        <Label text="Smart Note taking tool" styleClass="splash-subtitle">
+            <font>
+                <Font size="18"/>
+            </font>
+        </Label>
+    </VBox>
+</StackPane>
